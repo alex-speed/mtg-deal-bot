@@ -1,0 +1,60 @@
+# MTG deal bot: runs once a day and emails the report.
+#
+# Safe to run in production? Yes. It only reads public web pages and sends one email.
+# It changes nothing in your tenant or on any server. Use a personal repository for it.
+
+name: MTG deals
+
+on:
+  schedule:
+    # GitHub cron is always UTC. 21:17 UTC is 7:47am Adelaide during daylight saving
+    # (ACDT) and 6:47am once daylight saving ends in April (ACST).
+    - cron: "17 21 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Build the report but do not send the email"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Get the repository files
+        uses: actions/checkout@v4
+
+      - name: Install Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install requests
+        run: pip install requests
+
+      # Scheduled runs, and manual runs with dry_run unticked, send the email.
+      - name: Run bot and send email
+        if: ${{ github.event_name == 'schedule' || !inputs.dry_run }}
+        env:
+          GRAPH_TENANT_ID: ${{ secrets.GRAPH_TENANT_ID }}
+          GRAPH_CLIENT_ID: ${{ secrets.GRAPH_CLIENT_ID }}
+          GRAPH_CLIENT_SECRET: ${{ secrets.GRAPH_CLIENT_SECRET }}
+          MAIL_FROM: ${{ secrets.MAIL_FROM }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+        run: python mtg_deal_bot.py
+
+      # Manual runs with dry_run ticked build report.html and attach it to the run.
+      - name: Run bot (dry run)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+        run: python mtg_deal_bot.py --dry-run
+
+      - name: Attach the dry-run report
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: report
+          path: report.html
