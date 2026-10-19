@@ -415,6 +415,7 @@ def main():
         print(subject, "-> email sent")
     return 0
 
-
+import store_config
+store_config.load_into(globals(), "stores-sealed.txt", kind="sealed")
 if __name__ == "__main__":
     sys.exit(main())
