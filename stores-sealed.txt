@@ -1,0 +1,49 @@
+# Stores for the MTG sealed product bot.
+#
+# One store per line, with the parts separated by the | character:
+#
+#   Name | Website | Collection | Options
+#
+#   Name        any name you like. It shows in the report.
+#   Website     the store's web address, for example https://example.com.au
+#               You can paste a whole collection address here instead, for example
+#               https://example.com.au/collections/magic-the-gathering, and leave Collection empty.
+#   Collection  the last part of the collection address. Separate several with commas.
+#   Options     optional, separated by commas:
+#                 off     skip this line without deleting it
+#                 woo     a WooCommerce store. Leave Collection empty. The bot searches for Magic.
+#                 page    a store whose web pages are read directly. Collection holds the page
+#                         addresses, for example /brand/magic-the-gathering
+#
+# To add a store: copy a line, change it, and save. A check runs on GitHub within a minute and shows
+# whether the store can be read. Lines starting with # are ignored.
+# To find a store's collection names, open Actions, choose "Check stores", select Run workflow,
+# and type the store's website in the box.
+# To add another collection to a store that is already listed, write another line with the same name
+# and website.
+#
+
+Goldfields | https://goldfieldsgames.com.au | magic-the-gathering, mtg-commander-decks, mtg-booster-packs-boxes
+Gameology | https://www.gameology.com.au | magic-the-gathering-booster-boxes, magic-the-gathering, trading-card-game-clearance, mtg-lorwyn-eclipsed, magic-reality-fracture
+Good Games | https://www.goodgames.com.au | magic-the-gathering-marvel-super-heroes, magic-the-gathering-reality-fracture, magic-the-gathering-tarkir-dragonstorm, magic-the-gathering
+Behold Games | https://beholdgames.com.au | on-sale/magic-the-gathering, magic-the-gathering-foundations-commander, magic-the-gathering
+Games Empire | https://gamesempire.com.au | clearance-sale/magic-the-gathering, mid-year-sale/magic-the-gathering, magic-the-gathering
+Combat Company | https://thecombatcompany.com | magic-the-gathering-clearance, magic-the-gathering
+JB Hi-Fi | https://www.jbhifi.com.au | collectibles-merchandise/magic-the-gathering
+General Games | https://www.generalgames.com.au | magic-the-gathering
+Tactical TCG | https://www.tacticaltcg.com.au | magic-sealed
+Tabletop Commons | https://tabletopcommons.com.au | magic-the-gathering-sealed
+AWNO Games | https://www.awnogames.com.au | magic-the-gathering/sealedbox, magic-the-gathering
+Cherry Collectables | https://www.cherrycollectables.com.au | magic-the-gathering
+Collector Smith | https://www.thecollectorsmith.com.au | mtg-cards
+Aussie Hobbies | https://www.aussiehobbies.com.au | magic-the-gathering
+Gap Games | https://www.gapgames.com.au | magic-the-gathering
+Pokebox | https://www.pokebox.com.au | magic-the-gathering
+Mighty Toys | https://mightytoys.com.au | magic-the-gathering
+GB Toys | https://gbtoys.com.au | magic-the-gathering
+Mint Collectables | https://mintcollectables.com.au | magic-the-gathering
+Games World | https://www.gamesworld.com.au | | woo
+JToys | https://www.jtoys.com.au | | woo
+TC Game Australia | https://tcgameaustralia.com | | woo
+Mind Games | https://www.m-g.com.au | | woo
+The Gamesmen | https://www.gamesmen.com.au | /brand/magic-the-gathering, /sale/trading-cards-sale/brand/magic-the-gathering | page
