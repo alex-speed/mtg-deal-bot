@@ -48,3 +48,6 @@ TC Game Australia | https://tcgameaustralia.com | | woo
 Mind Games | https://www.m-g.com.au | | woo
 The Gamesmen | https://www.gamesmen.com.au | /brand/magic-the-gathering, /sale/trading-cards-sale/brand/magic-the-gathering | page
 Shuffled | https://shuffled.com.au/collections/magic-the-gathering | magic-the-gathering
+Shuffled | https://shuffled.com.au | deck-boxes-mtg
+Shuffled | https://shuffled.com.au | mtg-bundles
+Shuffled | https://shuffled.com.au | commander-decks-1
