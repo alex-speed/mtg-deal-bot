@@ -54,4 +54,6 @@ Shuffled | https://shuffled.com.au | commander-decks-1
 Guf | https://guf.com.au | mtg-commander-starter-2022
 Guf | https://guf.com.au | mtg-commander-legends-battle-for-baldur-s-gate
 Guf | https://guf.com.au | mtg-clearance-stock
-
+Hobbyco | https://www.hobbyco.com.au | daily-magic-games
+Hobbyco | https://www.hobbyco.com.au | storewide-sale-ex-gunpla
+Hobbyco | https://www.hobbyco.com.au | games-school-holidays-sale
