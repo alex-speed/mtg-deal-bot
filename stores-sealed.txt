@@ -51,3 +51,7 @@ Shuffled | https://shuffled.com.au/collections/magic-the-gathering | magic-the-g
 Shuffled | https://shuffled.com.au | deck-boxes-mtg
 Shuffled | https://shuffled.com.au | mtg-bundles
 Shuffled | https://shuffled.com.au | commander-decks-1
+Guf | https://guf.com.au | mtg-commander-starter-2022
+Guf | https://guf.com.au | mtg-commander-legends-battle-for-baldur-s-gate
+Guf | https://guf.com.au | mtg-clearance-stock
+
