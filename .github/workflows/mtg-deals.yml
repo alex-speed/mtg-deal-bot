@@ -38,7 +38,7 @@ jobs:
 
       # Scheduled runs, and manual runs with dry_run unticked, send the email.
       - name: Run bot and send email
-        if: ${{ github.event_name == 'workflow_dispatch' && !inputs.dry_run }}
+        if: ${{ github.event_name == 'schedule' || inputs.dry_run }}
         env:
           GRAPH_TENANT_ID: ${{ secrets.GRAPH_TENANT_ID }}
           GRAPH_CLIENT_ID: ${{ secrets.GRAPH_CLIENT_ID }}
