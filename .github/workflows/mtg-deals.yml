@@ -38,7 +38,7 @@ jobs:
 
       # Scheduled runs, and manual runs with dry_run unticked, send the email.
       - name: Run bot and send email
-        if: ${{ github.event_name == 'schedule' || inputs.dry_run }}
+        if: ${{ github.event_name == 'workflow_dispatch' && !inputs.dry_run }}
         env:
           GRAPH_TENANT_ID: ${{ secrets.GRAPH_TENANT_ID }}
           GRAPH_CLIENT_ID: ${{ secrets.GRAPH_CLIENT_ID }}
@@ -49,11 +49,11 @@ jobs:
 
       # Manual runs with dry_run ticked build report.html and attach it to the run.
       - name: Run bot (dry run)
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+        if: ${{ github.event_name == 'schedule' || inputs.dry_run }}
         run: python mtg_deal_bot.py --dry-run
 
       - name: Attach the dry-run report
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+        if: ${{ github.event_name == 'schedule' || inputs.dry_run }}
         uses: actions/upload-artifact@v4
         with:
           name: report
