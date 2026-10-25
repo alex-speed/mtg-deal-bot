@@ -69,3 +69,18 @@ Spellroo Gaming | https://spellroogaming.com.au | magic-the-gathering-sealed
 Playmantis | https://playmantis.com.au | magic-the-gathering-all-sealed-products 
 Tabernacle Games | https://tcg.tabernaclegames.com.au | sealed-mtg 
 Gameology | https://www.gameology.com.au | magic-tcg
+Manamarket | https://manamarket.com.au | magic-the-gathering-commander-masters-singles
+Manamarket | https://manamarket.com.au | magic-the-gathering-innistrad-crimson-vow-commander-singles
+Manamarket | https://manamarket.com.au | magic-the-gathering-sealed
+Elementalarcade | https://elementalarcade.com.au | magic-the-gathering-sealed-products
+Elementalarcade | https://elementalarcade.com.au | magic-the-gathering-tcg-singles
+Elementalarcade | https://elementalarcade.com.au | magic-the-gathering-digital-binder
+Fromthedeepgames | https://fromthedeepgames.com.au | mtg-sealed
+Fromthedeepgames | https://fromthedeepgames.com.au | mtg-singles-instock
+Fromthedeepgames | https://fromthedeepgames.com.au | mtg-singles-all-products
+Inngames | https://inngames.com.au | mtg-sealed-booster-boxes
+Inngames | https://inngames.com.au | mtg-sealed-booster-packs
+Inngames | https://inngames.com.au | mtg-decks
+Gamesportal | https://gamesportal.com.au | magic-msh-set-singles-copy
+Gamesportal | https://gamesportal.com.au | sealed-magic-products
+Gamesportal | https://gamesportal.com.au | magic-banlist-commander
