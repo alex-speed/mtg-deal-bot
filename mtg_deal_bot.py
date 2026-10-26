@@ -226,8 +226,43 @@ NOISE_WORDS = {"magic", "mtg", "the", "gathering", "tcg", "wizards", "of", "coas
 _PLURALS = {"boosters": "booster", "packs": "pack", "decks": "deck", "bundles": "bundle", "boxes": "box"}
 
 
+# Phrases that only say how many a customer may buy, such as "(One Per Customer)" or
+# "*LIMIT 1 PER CUSTOMER*". They are removed before titles are compared.
+_WHO = r"(?:customer|person|household|order|account)"
+_LIMIT_RE = re.compile(
+    r"\b(?:strictly\s+)?(?:limit|max(?:imum)?)\b[\w\s/]{0,20}?\bper\s+" + _WHO + r"(?:\s*/\s*" + _WHO + r")*"
+    r"|\b(?:one|1)\s+per\s+" + _WHO + r"(?:\s*/\s*" + _WHO + r")*", re.I)
+
+# Ways a listing says it sells several decks together: "Set of 4", "4 Decks", "All 4", "x4", "(4)".
+_PACK_RES = [
+    re.compile(r"\bset\s+of\s+(\d+)\b"),
+    re.compile(r"\b(\d+)\s*(?:x\s*)?(?:commander\s+|starter\s+|theme\s+)?decks\b"),
+    re.compile(r"\ball\s+(\d+)\b"),
+    re.compile(r"\b(\d+)\s*x\b|\bx\s*(\d+)\b"),
+    re.compile(r"\b(\d+)[\s-]*pack\b"),
+    re.compile(r"\(\s*(\d+)\s*\)"),
+]
+
+
+def is_deck_pack(title, url, tok):
+    """True when a deck listing sells several decks together (a set of 4, a display, or just 'Decks')."""
+    if "deck" not in tok or "booster" in tok:
+        return False
+    path = re.sub(r"[-_/.]+", " ", re.sub(r"^https?://[^/]+", "", (url or "").lower()))
+    text = f"{title.lower()} {path}"
+    for rx in _PACK_RES:
+        for m in rx.finditer(text):
+            n = int(next(g for g in m.groups() if g))
+            if 2 <= n <= 10:
+                return True
+    if "display" in tok and "commander" in tok:   # a Commander deck display holds several decks
+        return True
+    single = re.search(r"\b(?:assorted|random|choose|select|pick|style)\b", text)
+    return bool(re.search(r"\bdecks\b", title.lower()) and not single)
+
+
 def title_tokens(title):
-    t = title.lower().replace("superheroes", "super heroes")
+    t = _LIMIT_RE.sub(" ", title).lower().replace("superheroes", "super heroes")
     t = t.replace("spider-man", "spiderman").replace("spider man", "spiderman")
     t = re.sub(r"[^a-z0-9 ]", " ", t)
     out = set()
@@ -248,8 +283,15 @@ def title_tokens(title):
 def prepare(items):
     for it in items:
         tok = title_tokens(it["title"])
-        it["type"] = frozenset(tok & TYPE_WORDS)
+        typ = set(tok & TYPE_WORDS)
+        packs = is_deck_pack(it["title"], it.get("url", ""), tok)
+        if packs:   # several decks sold together: compared only with other sets, never with single decks
+            typ -= {"display", "set", "pack"}
+            typ.add("multi")
+        it["type"] = frozenset(typ)
         it["name"] = tok - TYPE_WORDS - NOISE_WORDS
+        if packs:   # the number of decks is not part of the name
+            it["name"] = {w for w in it["name"] if not (w.isdigit() and len(w) == 1)}
 
 
 def same_product(a, b):
@@ -294,6 +336,7 @@ def analyse(items):
                     **it, "gap": gap, "gap_median": gap_median,
                     "next_store": cheapest_other["store"], "next_price": cheapest_other["price"],
                     "median_others": median_others,
+                    "n_stores": len({o["store"] for o in others}),
                     "new": is_new(it),
                 })
         elif it["was"] and (1 - it["price"] / it["was"]) >= MIN_DISCOUNT_UNVERIFIED:
@@ -340,7 +383,10 @@ def build_html(outliers, unverified, stats, items_checked):
             parts.append(
                 f"<tr><td>{link(r)}</td><td>${r['price']:.2f}</td>"
                 f"<td>${r['next_price']:.2f} ({escape(r['next_store'])})</td>"
-                f"<td>{r['gap']:.0%}<br>({r['gap_median']:.0%} vs median)</td><td>${r['median_others']:.2f}</td>"<td>{r['n_stores']}</td></tr>")
+                                f"<td>{r['gap']:.0%}<br>({r['gap_median']:.0%} vs median)"
+                + ("<br><em>check it is the same product</em>" if r["gap"] >= 0.6 and r["n_stores"] == 1 else "")
+                + f"</td><td>${r['median_others']:.2f}</td>"
+                f"<td>{r['n_stores']}</td></tr>")
         parts.append("</table>")
         parts.append("<p>A gap based on only one other store is weak evidence. Higher 'Other stores' counts are more reliable.</p>")
     else:
