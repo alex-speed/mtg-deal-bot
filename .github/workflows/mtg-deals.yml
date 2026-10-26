@@ -1,7 +1,15 @@
-# MTG deal bot: runs once a day and emails the report.
+# MTG deal bot (sealed product).
 #
-# Safe to run in production? Yes. It only reads public web pages and sends one email.
-# It changes nothing in your tenant or on any server. Use a personal repository for it.
+# Scheduled runs are DRY RUNS: they build the report and attach it to the run, and send no email.
+# They also show only deals that have not been reported before. The list of reported deals is kept
+# in seen-sealed.json, which this workflow commits back to the repository after each run.
+#
+# Manual runs show every deal and leave the history alone, unless you tick "only new".
+# To get the report by email, run this workflow by hand and untick "dry run".
+#
+# Safe to run in production? Yes. It only reads public web pages, and sends one email only when you
+# untick dry run by hand. It changes nothing in your tenant or on any server, and the only file it
+# writes to the repository is seen-sealed.json. Use a personal repository for it.
 
 name: MTG deals
 
@@ -16,45 +24,80 @@ on:
         description: "Build the report but do not send the email"
         type: boolean
         default: true
+      only_new:
+        description: "Show only deals not reported before, and update the history (scheduled runs always do this)"
+        type: boolean
+        default: false
 
+# Needed so the run can save seen-sealed.json.
 permissions:
-  contents: read
+  contents: write
+
+# Never run two copies at once, because both would write the history file.
+concurrency:
+  group: mtg-deals
+  cancel-in-progress: false
 
 jobs:
   run-bot:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Get the repository files
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install Python 3.12
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
-      - name: Install requests
-        run: pip install requests
+      - name: Install requests and the HTML reader
+        run: pip install requests beautifulsoup4 lxml
 
-      # Scheduled runs, and manual runs with dry_run unticked, send the email.
+      # Only a manual run with dry run unticked sends an email.
       - name: Run bot and send email
         if: ${{ github.event_name == 'workflow_dispatch' && !inputs.dry_run }}
         env:
+          ONLY_NEW: ${{ inputs.only_new && '1' || '' }}
+          MAIL_FROM: ${{ secrets.MAIL_FROM }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+          # Option A: Microsoft Graph. Used when SMTP_HOST is not set.
           GRAPH_TENANT_ID: ${{ secrets.GRAPH_TENANT_ID }}
           GRAPH_CLIENT_ID: ${{ secrets.GRAPH_CLIENT_ID }}
           GRAPH_CLIENT_SECRET: ${{ secrets.GRAPH_CLIENT_SECRET }}
-          MAIL_FROM: ${{ secrets.MAIL_FROM }}
-          MAIL_TO: ${{ secrets.MAIL_TO }}
+          # Option B: SMTP, for example Gmail with an app password.
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
         run: python mtg_deal_bot.py
 
-      # Manual runs with dry_run ticked build report.html and attach it to the run.
+      # Scheduled runs, and manual runs with dry run ticked, build report.html and attach it to the run.
       - name: Run bot (dry run)
         if: ${{ github.event_name == 'schedule' || inputs.dry_run }}
+        env:
+          ONLY_NEW: ${{ (github.event_name == 'schedule' || inputs.only_new) && '1' || '' }}
         run: python mtg_deal_bot.py --dry-run
 
-      - name: Attach the dry-run report
+      - name: Attach the report
         if: ${{ github.event_name == 'schedule' || inputs.dry_run }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: report
           path: report.html
+          retention-days: 14
+
+      # Saves the list of deals already reported. It runs only after the bot finished without an error.
+      - name: Save the list of reported deals
+        if: ${{ github.event_name == 'schedule' || inputs.only_new }}
+        run: |
+          if [ -n "$(git status --porcelain seen-sealed.json)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add seen-sealed.json
+            git commit -m "Update reported deals"
+            git pull --rebase
+            git push
+          else
+            echo "No change to seen-sealed.json"
+          fi
