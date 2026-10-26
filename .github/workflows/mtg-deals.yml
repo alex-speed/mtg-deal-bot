@@ -58,7 +58,7 @@ jobs:
       - name: Run bot and send email
         if: ${{ github.event_name == 'workflow_dispatch' && !inputs.dry_run }}
         env:
-          ONLY_NEW: ${{ inputs.only_new && '1' || '' }}
+          ONLY_NEW: ${{ inputs.only_new && 'highlight' || '' }}
           MAIL_FROM: ${{ secrets.MAIL_FROM }}
           MAIL_TO: ${{ secrets.MAIL_TO }}
           # Option A: Microsoft Graph. Used when SMTP_HOST is not set.
@@ -76,7 +76,7 @@ jobs:
       - name: Run bot (dry run)
         if: ${{ github.event_name == 'schedule' || inputs.dry_run }}
         env:
-          ONLY_NEW: ${{ (github.event_name == 'schedule' || inputs.only_new) && '1' || '' }}
+          ONLY_NEW: ${{ (github.event_name == 'schedule' || inputs.only_new) && 'highlight' || '' }}
         run: python mtg_deal_bot.py --dry-run
 
       - name: Attach the report
