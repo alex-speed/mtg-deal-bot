@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-deal_history.py: remembers the deals the sealed product bot has already reported, so each report
-shows only the deals that are new since the last one.
+deal_history.py: remembers the deals the sealed product bot has already reported, so a report can
+either show only the deals that are new, or show every deal with the new ones highlighted.
 
 Safe to run in production? Yes. It reads and writes one small JSON file next to the bot script and
 makes no web requests. It changes nothing in your tenant or on any server.
@@ -12,35 +12,65 @@ if __name__ == "__main__":  ):
     import deal_history
     deal_history.install(globals(), "seen-sealed.json")
 
-Nothing changes unless the environment variable ONLY_NEW is set to 1. When it is set:
-  - the bot's analyse() result is filtered, so deals already reported are hidden
-  - the report starts with a short note saying how many were hidden, and lists price drops
-  - after the bot finishes without an error, the history file is updated
+Nothing changes unless the environment variable ONLY_NEW is set. Its value picks the behaviour:
 
-A deal counts as already reported when the same listing (store and page address) was shown in an
-earlier report. A deal is shown again when its price falls by at least PRICE_DROP_PERCENT percent
-and at least PRICE_DROP_MIN_DOLLARS below the lowest price reported so far. A deal that has not
-appeared for HISTORY_GRACE_DAYS days is forgotten, so it counts as new if it comes back.
+    ONLY_NEW=highlight   show every current deal. Deals first seen today get a red NEW badge and a
+                         yellow background, deals whose price has dropped get an orange PRICE DROP
+                         badge, and both groups are sorted to the top of their table. The history file
+                         is updated after the bot finishes without an error.
+    ONLY_NEW=1           show only deals not reported before (the older behaviour), plus price drops.
+    (not set)            nothing changes and the history file is left alone.
 
-To start again from nothing, delete the history file.
+A deal is one listing (store and page address). A deal is a price drop when its price falls by at
+least PRICE_DROP_PERCENT percent and at least PRICE_DROP_MIN_DOLLARS below the lowest price reported
+so far. A deal that has not appeared for HISTORY_GRACE_DAYS days is forgotten, so it counts as new if
+it comes back. Dates are Adelaide dates. Highlighting lasts HIGHLIGHT_DAYS days.
+
+Nothing is highlighted on the day the history file is created, because every deal would be new. The
+deals seen that day become the baseline. To start again from nothing, delete the history file.
 """
 import copy
 import json
 import os
+import re
 import sys
 from datetime import datetime, timedelta, timezone
 from html import escape
 from urllib.parse import urlsplit
 
+try:
+    from zoneinfo import ZoneInfo
+    _TZ = ZoneInfo("Australia/Adelaide")
+except Exception:  # no time zone database: use UTC dates instead
+    _TZ = timezone.utc
+
 HISTORY_GRACE_DAYS = 10        # forget a deal that has not appeared for this many days
-PRICE_DROP_PERCENT = 5.0       # show a reported deal again if its price falls by this much
-PRICE_DROP_MIN_DOLLARS = 2.0   # and by at least this many dollars
+PRICE_DROP_PERCENT = 5.0       # a price drop is a fall of at least this many percent
+PRICE_DROP_MIN_DOLLARS = 2.0   # and at least this many dollars
+HIGHLIGHT_DAYS = 1             # how many days a new deal or price drop stays highlighted (1 = today only)
+MAX_LIST_IN_NOTE = 20          # most new deals listed in the note at the top of the report
 TRUE_WORDS = {"1", "true", "yes", "on"}
 FORMAT_VERSION = 1
 
+NEW_COLOUR = "#fff3b0"
+DROP_COLOUR = "#ffe0b2"
+_BADGE_STYLE = "color:#fff;padding:1px 6px;border-radius:3px;font-size:11px;font-weight:bold"
+_BLOCK_RE = re.compile(r"<tr\b[^>]*>.*?</tr>|<li\b[^>]*>.*?</li>", re.S | re.I)
+_HREF_RE = re.compile(r'href="([^"]*)"')
+
 
 def _today():
-    return datetime.now(timezone.utc).date()
+    return datetime.now(_TZ).date()
+
+
+def read_mode(env_var="ONLY_NEW"):
+    """Returns 'highlight', 'hide' or None from the environment variable."""
+    value = os.environ.get(env_var, "").strip().lower()
+    if value == "highlight":
+        return "highlight"
+    if value in TRUE_WORDS:
+        return "hide"
+    return None
 
 
 def deal_key(kind, item):
@@ -59,21 +89,26 @@ def _money(x):
 
 
 class History:
-    def __init__(self, path):
+    def __init__(self, path, mode="hide"):
         self.path = path
+        self.mode = mode
         self.loaded = {}          # what the file held when it was read
+        self.created = None       # the date the history began (a string), or None when unknown
         self.deals = {}           # what will be written by save()
         self.first_run = False
         self.problem = None
         self.applied = False
+        self.active = False       # True when highlighting is switched on for this run
         self.new = 0
         self.hidden = 0
+        self.unchanged = 0
         self.drops = []
+        self.marks = {}           # url -> details, for the deals to highlight
         self.total_current = 0
 
     # ---------------------------------------------------------------- reading
     def load(self):
-        self.loaded, self.problem, self.first_run = {}, None, False
+        self.loaded, self.problem, self.first_run, self.created = {}, None, False, None
         if not os.path.exists(self.path):
             self.first_run = True
             return self
@@ -89,15 +124,44 @@ class History:
         for key, entry in deals.items():
             if isinstance(entry, dict) and isinstance(entry.get("price"), (int, float)):
                 self.loaded[str(key)] = entry
+        created = data.get("created")
+        if isinstance(created, str) and re.fullmatch(r"\d{4}-\d{2}-\d{2}", created):
+            self.created = created
+        elif self.loaded:
+            # a history file from before this field existed: the earliest date it knows is the baseline
+            firsts = [str(e.get("first_seen")) for e in self.loaded.values()
+                      if re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(e.get("first_seen") or ""))]
+            self.created = min(firsts) if firsts else None
         return self
 
-    # ---------------------------------------------------------------- filtering
+    # ---------------------------------------------------------------- filtering and marking
     def apply(self, outliers, unverified):
-        """Returns (outliers, unverified) with already reported deals removed. Safe to call twice."""
-        today = _today().isoformat()
+        """
+        Returns (outliers, unverified).
+        Mode hide: already reported deals are removed.
+        Mode highlight: every deal is kept, new ones and price drops are marked and sorted first.
+        Safe to call twice.
+        """
+        today = _today()
+        today_s = today.isoformat()
+        since = (today - timedelta(days=max(HIGHLIGHT_DAYS, 1) - 1)).isoformat()
+        highlight = self.mode == "highlight"
+        # highlighting needs a history that began on an earlier day, otherwise every deal looks new
+        self.active = bool(highlight and not self.first_run and not self.problem
+                           and self.created and self.created < today_s)
         deals = copy.deepcopy(self.loaded)
-        self.new, self.hidden, self.drops, self.total_current = 0, 0, [], 0
+        self.new, self.hidden, self.unchanged, self.drops, self.marks, self.total_current = 0, 0, 0, [], {}, 0
         shown = {"outlier": [], "unverified": []}
+        rank = {}
+
+        def mark(item, kind, was=None):
+            url = item.get("url") or ""
+            info = {"kind": kind, "title": item.get("title", ""), "store": item.get("store", ""),
+                    "price": float(item["price"]), "was": was, "url": url}
+            if url not in self.marks or kind == "drop":
+                self.marks[url] = info
+            return 0 if kind == "new" else 1
+
         for kind, items in (("outlier", outliers), ("unverified", unverified)):
             for item in items:
                 self.total_current += 1
@@ -108,28 +172,92 @@ class History:
                     self.new += 1
                     shown[kind].append(item)
                     deals[key] = {"title": item.get("title", ""), "store": item.get("store", ""), "price": price,
-                                  "first_seen": today, "last_seen": today, "reported": today}
+                                  "first_seen": today_s, "last_seen": today_s, "reported": today_s}
+                    if self.active:
+                        rank[id(item)] = mark(item, "new")
+                    elif highlight:
+                        self.unchanged += 1
                     continue
                 prev_price = float(prev["price"])
                 dropped = prev_price - price
-                if dropped >= PRICE_DROP_MIN_DOLLARS and price <= prev_price * (1 - PRICE_DROP_PERCENT / 100.0):
+                is_drop = dropped >= PRICE_DROP_MIN_DOLLARS and price <= prev_price * (1 - PRICE_DROP_PERCENT / 100.0)
+                if is_drop:
                     shown[kind].append(item)
                     self.drops.append({"title": item.get("title", ""), "store": item.get("store", ""),
                                        "url": item.get("url", ""), "was": prev_price, "now": price})
                     prev["price"] = price          # remember the lowest price reported
-                    prev["reported"] = today
+                    prev["reported"] = today_s
+                    prev["drop_date"] = today_s
+                    prev["drop_from"] = prev_price
+                    if self.active:
+                        rank[id(item)] = mark(item, "drop", prev_price)
+                elif highlight:
+                    shown[kind].append(item)
+                    first_seen = str(prev.get("first_seen") or "")
+                    drop_date = str(prev.get("drop_date") or "")
+                    if self.active and first_seen >= since and first_seen > (self.created or ""):
+                        rank[id(item)] = mark(item, "new")   # first seen on an earlier run inside the window
+                    elif self.active and drop_date >= since and price <= prev_price \
+                            and isinstance(prev.get("drop_from"), (int, float)):
+                        rank[id(item)] = mark(item, "drop", float(prev["drop_from"]))
+                    else:
+                        self.unchanged += 1
                 else:
                     self.hidden += 1
-                prev["last_seen"] = today
+                prev["last_seen"] = today_s
                 prev["title"] = item.get("title", prev.get("title", ""))
         self.deals = deals
         self.applied = True
-        return shown["outlier"], shown["unverified"]
+        out = []
+        for kind in ("outlier", "unverified"):
+            items = shown[kind]
+            if highlight:
+                items = sorted(items, key=lambda it: rank.get(id(it), 2))   # stable: keeps the bot's own order
+            out.append(items)
+        return out[0], out[1]
 
-    # ---------------------------------------------------------------- the report note
+    # ---------------------------------------------------------------- the report
+    def _badge(self, info):
+        if info["kind"] == "drop":
+            was = f", was {_money(info['was'])}" if info.get("was") else ""
+            return f'<span style="background:#e67e00;{_BADGE_STYLE}">PRICE DROP{was}</span> '
+        return f'<span style="background:#c00;{_BADGE_STYLE}">NEW</span> '
+
+    def highlight_html(self, html):
+        """Marks the rows and list items for the new deals and price drops. Everything else is left alone."""
+        if self.mode != "highlight" or not self.active or not self.marks:
+            return html
+        by_href = {escape(url): info for url, info in self.marks.items() if url}
+
+        def fix(match):
+            block = match.group(0)
+            href = _HREF_RE.search(block)
+            info = by_href.get(href.group(1)) if href else None
+            if not info:
+                return block
+            colour = DROP_COLOUR if info["kind"] == "drop" else NEW_COLOUR
+            badge = self._badge(info)
+            end = block.index(">") + 1
+            opening, rest = block[:end], block[end:]
+            if "style=" not in opening:
+                opening = opening[:-1] + f' style="background:{colour}">'
+            if block[:3].lower() == "<tr":
+                rest = rest.replace("<td>", f'<td style="background:{colour}">')
+                first_td = rest.lower().find("<td")
+                if first_td >= 0:
+                    at = rest.index(">", first_td) + 1
+                    rest = rest[:at] + badge + rest[at:]
+            else:
+                rest = badge + rest
+            return opening + rest
+
+        return _BLOCK_RE.sub(fix, html)
+
     def note_html(self):
         if not self.applied:
             return ""
+        if self.mode == "highlight":
+            return self._note_highlight()
         parts = ['<div style="border:1px solid #999;padding:6px 10px;margin-bottom:12px">']
         parts.append("<p><b>Only deals not reported before are shown.</b> "
                      f"{self.new} new, {len(self.drops)} price drop(s), "
@@ -150,14 +278,56 @@ class History:
         parts.append("</div>")
         return "\n".join(parts)
 
+    def _note_highlight(self):
+        news = [m for m in self.marks.values() if m["kind"] == "new"]
+        drops = [m for m in self.marks.values() if m["kind"] == "drop"]
+        parts = ['<div style="border:1px solid #999;padding:6px 10px;margin-bottom:12px">']
+        if self.active:
+            parts.append(f"<p><b>All {self.total_current} current deals are shown.</b> "
+                         f"{len(news)} new (yellow, red NEW badge), {len(drops)} price drop(s) "
+                         f"(orange badge), {self.unchanged} unchanged since earlier reports. "
+                         "New deals and price drops are listed first in each table.</p>")
+        else:
+            why = ("the history could not be read" if self.problem else
+                   "the history started today" if (self.first_run or self.created == _today().isoformat())
+                   else "the history has no start date")
+            parts.append(f"<p><b>All {self.total_current} current deals are shown.</b> "
+                         f"Nothing is highlighted yet because {why}. "
+                         "From the next day's report, new deals will be highlighted.</p>")
+            if self.problem:
+                parts.append(f"<p>Note: {escape(self.problem)}.</p>")
+        if news:
+            parts.append("<p>New today:</p><ul>")
+            for m in news[:MAX_LIST_IN_NOTE]:
+                label = escape(m["title"])
+                if m["url"]:
+                    label = f'<a href="{escape(m["url"])}">{label}</a>'
+                parts.append(f"<li>{label} at {escape(m['store'])}: {_money(m['price'])}</li>")
+            if len(news) > MAX_LIST_IN_NOTE:
+                parts.append(f"<li>and {len(news) - MAX_LIST_IN_NOTE} more, highlighted below</li>")
+            parts.append("</ul>")
+        if drops:
+            parts.append("<p>Price drops:</p><ul>")
+            for m in drops[:MAX_LIST_IN_NOTE]:
+                label = escape(m["title"])
+                if m["url"]:
+                    label = f'<a href="{escape(m["url"])}">{label}</a>'
+                was = f"{_money(m['was'])} down to " if m.get("was") else ""
+                parts.append(f"<li>{label} at {escape(m['store'])}: {was}{_money(m['price'])}</li>")
+            parts.append("</ul>")
+        parts.append("</div>")
+        return "\n".join(parts)
+
     # ---------------------------------------------------------------- writing
     def save(self):
         """Writes the history file. Forgets deals not seen for HISTORY_GRACE_DAYS days."""
         if not self.applied:
             return False
+        today_s = _today().isoformat()
         cutoff = (_today() - timedelta(days=HISTORY_GRACE_DAYS)).isoformat()
-        kept = {k: v for k, v in self.deals.items() if str(v.get("last_seen") or _today().isoformat()) >= cutoff}
-        data = {"version": FORMAT_VERSION, "deals": kept}
+        kept = {k: v for k, v in self.deals.items() if str(v.get("last_seen") or today_s) >= cutoff}
+        self.created = self.created or today_s
+        data = {"version": FORMAT_VERSION, "created": self.created, "deals": kept}
         tmp = self.path + ".tmp"
         with open(tmp, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=1, sort_keys=True, ensure_ascii=False)
@@ -167,6 +337,11 @@ class History:
         return True
 
     def summary_line(self):
+        if self.mode == "highlight":
+            n_new = sum(1 for m in self.marks.values() if m["kind"] == "new")
+            n_drop = sum(1 for m in self.marks.values() if m["kind"] == "drop")
+            return (f"Deal history (highlight): {n_new} new, {n_drop} price drop(s), {self.unchanged} unchanged, "
+                    f"{len(self.deals)} deals remembered")
         return (f"Deal history: {self.new} new, {len(self.drops)} price drop(s), {self.hidden} hidden "
                 f"(already reported), {len(self.deals)} deals remembered")
 
@@ -178,11 +353,12 @@ class History:
 
 def install(namespace, filename="seen-sealed.json", env_var="ONLY_NEW"):
     """
-    Wraps the bot's analyse(), build_html() and main() (found in `namespace`, pass globals()) so the report
-    shows only new deals. Does nothing unless the environment variable is set to 1.
-    Returns the History object, or None when it is switched off or cannot be installed.
+    Wraps the bot's analyse(), build_html() and main() (found in `namespace`, pass globals()).
+    Does nothing unless the environment variable is set. Returns the History object, or None when it
+    is switched off or cannot be installed.
     """
-    if os.environ.get(env_var, "").strip().lower() not in TRUE_WORDS:
+    mode = read_mode(env_var)
+    if mode is None:
         return None
     needed = [n for n in ("analyse", "build_html", "main") if not callable(namespace.get(n))]
     if needed:
@@ -191,7 +367,7 @@ def install(namespace, filename="seen-sealed.json", env_var="ONLY_NEW"):
         return None
     base = os.path.dirname(os.path.abspath(namespace.get("__file__") or "."))
     path = filename if os.path.isabs(filename) else os.path.join(base, filename)
-    hist = History(path).load()
+    hist = History(path, mode).load()
 
     original_analyse = namespace["analyse"]
     original_build = namespace["build_html"]
@@ -205,7 +381,7 @@ def install(namespace, filename="seen-sealed.json", env_var="ONLY_NEW"):
         return hist.apply(result[0], result[1])
 
     def build_html(*args, **kwargs):
-        html = original_build(*args, **kwargs)
+        html = hist.highlight_html(original_build(*args, **kwargs))
         note = hist.note_html()
         return note + "\n" + html if note else html
 
@@ -217,8 +393,8 @@ def install(namespace, filename="seen-sealed.json", env_var="ONLY_NEW"):
         return code
 
     namespace["analyse"], namespace["build_html"], namespace["main"] = analyse, build_html, main
-    print(f"Deal history on: {os.path.basename(path)}" + (" (new file)" if hist.first_run else
-                                                         f", {len(hist.loaded)} deals remembered"), flush=True)
+    state = "new file" if hist.first_run else f"{len(hist.loaded)} deals remembered"
+    print(f"Deal history on ({mode}): {os.path.basename(path)}, {state}", flush=True)
     return hist
 
 
