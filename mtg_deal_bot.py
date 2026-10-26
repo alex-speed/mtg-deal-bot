@@ -286,18 +286,19 @@ def analyse(items):
         others = [o for o in groups[it["type"]] if o["store"] != it["store"] and same_product(it, o)]
         if others:
             cheapest_other = min(others, key=lambda o: o["price"])
+            median_others = statistics.median(o["price"] for o in others)
             gap = 1 - it["price"] / cheapest_other["price"]
-            if gap >= MIN_GAP_VS_OTHERS:
+            gap_median = 1 - it["price"] / median_others
+            if gap >= MIN_GAP_VS_OTHERS or gap_median >= MIN_GAP_VS_OTHERS:
                 outliers.append({
-                    **it, "gap": gap,
+                    **it, "gap": gap, "gap_median": gap_median,
                     "next_store": cheapest_other["store"], "next_price": cheapest_other["price"],
-                    "median_others": statistics.median(o["price"] for o in others),
-                    "n_stores": len({o["store"] for o in others}),
+                    "median_others": median_others,
                     "new": is_new(it),
                 })
         elif it["was"] and (1 - it["price"] / it["was"]) >= MIN_DISCOUNT_UNVERIFIED:
             unverified.append({**it, "discount": 1 - it["price"] / it["was"], "new": is_new(it)})
-    outliers.sort(key=lambda r: r["gap"], reverse=True)
+    outliers.sort(key=lambda r: max(r["gap"], r["gap_median"]), reverse=True)
     unverified.sort(key=lambda r: r["discount"], reverse=True)
     return outliers, unverified
 
@@ -339,7 +340,7 @@ def build_html(outliers, unverified, stats, items_checked):
             parts.append(
                 f"<tr><td>{link(r)}</td><td>${r['price']:.2f}</td>"
                 f"<td>${r['next_price']:.2f} ({escape(r['next_store'])})</td>"
-                f"<td>{r['gap']:.0%}</td><td>${r['median_others']:.2f}</td><td>{r['n_stores']}</td></tr>")
+                f"<td>{r['gap']:.0%}<br>({r['gap_median']:.0%} vs median)</td><td>${r['median_others']:.2f}</td>"<td>{r['n_stores']}</td></tr>")
         parts.append("</table>")
         parts.append("<p>A gap based on only one other store is weak evidence. Higher 'Other stores' counts are more reliable.</p>")
     else:
