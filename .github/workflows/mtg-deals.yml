@@ -1,15 +1,17 @@
 # MTG deal bot (sealed product).
 #
-# Scheduled runs are DRY RUNS: they build the report and attach it to the run, and send no email.
-# They also show only deals that have not been reported before. The list of reported deals is kept
-# in seen-sealed.json, which this workflow commits back to the repository after each run.
+# Scheduled runs are DRY RUNS: they build the report, attach it to the run, publish it to GitHub
+# Pages and send no email. They highlight deals that are new since the last report. The list of
+# reported deals is kept in seen-sealed.json, and the web pages are kept in the docs folder. This
+# workflow commits both back to the repository after each scheduled run.
 #
-# Manual runs show every deal and leave the history alone, unless you tick "only new".
+# Manual runs show every deal and leave the history and the web page alone, unless you tick
+# "only new".
 # To get the report by email, run this workflow by hand and untick "dry run".
 #
 # Safe to run in production? Yes. It only reads public web pages, and sends one email only when you
-# untick dry run by hand. It changes nothing in your tenant or on any server, and the only file it
-# writes to the repository is seen-sealed.json. Use a personal repository for it.
+# untick dry run by hand. It changes nothing in your tenant or on any server, and the only files it
+# writes to the repository are seen-sealed.json and the docs folder. Use a personal repository for it.
 
 name: MTG deals
 
@@ -25,11 +27,11 @@ on:
         type: boolean
         default: true
       only_new:
-        description: "Show only deals not reported before, and update the history (scheduled runs always do this)"
+        description: "Highlight new deals, update the history and publish the page (scheduled runs always do this)"
         type: boolean
         default: false
 
-# Needed so the run can save seen-sealed.json.
+# Needed so the run can save seen-sealed.json and the docs folder.
 permissions:
   contents: write
 
@@ -87,17 +89,50 @@ jobs:
           path: report.html
           retention-days: 14
 
-      # Saves the list of deals already reported. It runs only after the bot finished without an error.
-      - name: Save the list of reported deals
+      # Publishes the report to GitHub Pages and saves the list of reported deals.
+      # It runs only after the bot finished without an error.
+      - name: Publish report and save history
         if: ${{ github.event_name == 'schedule' || inputs.only_new }}
+        env:
+          SITE_TITLE: MTG sealed deals
         run: |
-          if [ -n "$(git status --porcelain seen-sealed.json)" ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add seen-sealed.json
-            git commit -m "Update reported deals"
-            git pull --rebase
-            git push
-          else
-            echo "No change to seen-sealed.json"
+          set -euo pipefail
+          DAY=$(TZ=Australia/Adelaide date +%F)
+          WHEN=$(TZ=Australia/Adelaide date '+%a %d %b %Y, %-I:%M%P')
+
+          page() {  # $1 = heading, $2 = links
+            printf '<!doctype html>\n<html lang="en-AU">\n<head>\n<meta charset="utf-8">\n'
+            printf '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
+            printf '<meta name="robots" content="noindex, nofollow">\n'
+            printf '<title>%s</title>\n</head>\n<body style="font-family:sans-serif">\n' "$1"
+            printf '<p><b>%s</b> | built %s Adelaide time | %s</p>\n<hr>\n' "$1" "$WHEN" "$2"
+          }
+
+          if [ -f report.html ]; then
+            mkdir -p docs/archive
+            touch docs/.nojekyll
+            { page "$SITE_TITLE" '<a href="archive/">Earlier reports</a>'; cat report.html; printf '\n</body>\n</html>\n'; } > docs/index.html
+            { page "$SITE_TITLE, $DAY" '<a href="./">All reports</a> | <a href="../">Latest</a>'; cat report.html; printf '\n</body>\n</html>\n'; } > "docs/archive/$DAY.html"
+            ls -1 docs/archive/2*.html | sort | head -n -30 | xargs -r rm -f
+            {
+              page "$SITE_TITLE: earlier reports" '<a href="../">Latest report</a>'
+              echo '<ul>'
+              for f in $(ls -1 docs/archive/2*.html | sort -r); do
+                d=$(basename "$f" .html)
+                echo "<li><a href=\"$d.html\">$d</a></li>"
+              done
+              printf '</ul>\n</body>\n</html>\n'
+            } > docs/archive/index.html
           fi
+
+          [ -d docs ] && git add docs || true
+          [ -f seen-sealed.json ] && git add seen-sealed.json || true
+          if git diff --cached --quiet; then
+            echo "Nothing new to save"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update report and reported deals"
+          git pull --rebase
+          git push
