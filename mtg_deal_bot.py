@@ -417,5 +417,7 @@ def main():
 
 import store_config
 store_config.load_into(globals(), "stores-sealed.txt", kind="sealed")
+import deal_history
+deal_history.install(globals(), "seen-sealed.json")
 if __name__ == "__main__":
     sys.exit(main())
