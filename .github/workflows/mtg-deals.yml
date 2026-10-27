@@ -96,6 +96,8 @@ jobs:
         env:
           SITE_TITLE: MTG sealed deals
           SITE_KICKER: Sealed product scan
+          SITE_CURRENT: Sealed
+          SITE_NAV: "Sealed|https://alex-speed.github.io/mtg-deal-bot/;Singles|https://alex-speed.github.io/mtg-singles-daily/"
         run: |
           set -euo pipefail
           python build_site.py
