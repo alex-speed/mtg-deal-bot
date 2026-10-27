@@ -125,6 +125,48 @@ def http_get_json(url, params=None):
     return resp.json()
 
 
+# Words in an option name that say it is the whole set of decks, such as "All 4 Decks" or "Set of 4".
+_SET_VARIANT_RE = re.compile(
+    r"\ball\s+(?:\d+|two|three|four|five|six|decks)\b|\bset\b|\bcomplete\b|\bbundle\b|\bdisplay\b"
+    r"|\b[2-9]\s*(?:x\s*)?decks?\b|\b[2-9]\s*x\b|\bx\s*[2-9]\b", re.I)
+
+
+def variant_text(v):
+    return " ".join(str(v.get(k) or "") for k in ("title", "option1", "option2", "option3"))
+
+
+def says_count(title, url):
+    """True when the title or the address states how many decks are sold together."""
+    path = re.sub(r"[-_/.]+", " ", re.sub(r"^https?://[^/]+", "", (url or "").lower()))
+    text = f"{title.lower()} {path}"
+    for rx in _PACK_RES:
+        for m in rx.finditer(text):
+            if 2 <= int(next(g for g in m.groups() if g)) <= 10:
+                return True
+    return False
+
+
+def pick_variant(title, url, variants, in_stock):
+    """
+    Chooses which option of a product is priced. Returns (option, solo).
+    Many stores sell "Commander Decks" as one product with an option for each single deck, and sometimes
+    one more option for the whole set. The cheapest option is then a single deck, not the set.
+      - a set option exists: price that option (None if it is sold out, so the product is skipped)
+      - no set option, but the title says how many decks: skipped, because it cannot be priced as a set
+      - no set option and no count: the options are single decks, so solo is True and it is compared as one deck
+    """
+    lowest = min(in_stock, key=lambda v: float(v["price"]))
+    if len(variants) < 2 or not is_deck_pack(title, url, title_tokens(title)):
+        return lowest, False
+    whole = [v for v in variants if _SET_VARIANT_RE.search(variant_text(v))]
+    if whole:
+        stocked = [v for v in whole if v.get("available")]
+        return (min(stocked, key=lambda v: float(v["price"])), False) if stocked else (None, False)
+    if says_count(title, url):
+        return None, False
+    return lowest, True
+
+
 def parse_shopify(store, base, p):
     title = p.get("title", "")
     if not wanted(title):
@@ -132,12 +174,18 @@ def parse_shopify(store, base, p):
     in_stock = [v for v in p.get("variants", []) if v.get("available")]
     if not in_stock:
         return None
-    cheapest = min(in_stock, key=lambda v: float(v["price"]))
+        cheapest, solo = pick_variant(title, f"{base}/products/{p.get('handle', '')}", p.get("variants", []), in_stock)
+    if cheapest is None:
+        return None
     price = float(cheapest["price"])
     was = float(cheapest["compare_at_price"]) if cheapest.get("compare_at_price") else 0.0
     if price <= 0:
         return None
-    return make_item(store, title, f"{base}/products/{p.get('handle', '')}", price, was, p.get("published_at"))
+        item = make_item(store, title, f"{base}/products/{p.get('handle', '')}", price, was, p.get("published_at"))
+    item["solo"] = solo
+    label = (cheapest.get("title") or "").strip()
+    item["variant"] = label if len(p.get("variants", [])) > 1 and label.lower() != "default title" else ""
+    return item
 
 
 def parse_woo(store, p):
@@ -284,7 +332,7 @@ def prepare(items):
     for it in items:
         tok = title_tokens(it["title"])
         typ = set(tok & TYPE_WORDS)
-        packs = is_deck_pack(it["title"], it.get("url", ""), tok)
+        packs = is_deck_pack(it["title"], it.get("url", ""), tok) and not it.get("solo")
         if packs:   # several decks sold together: compared only with other sets, never with single decks
             typ -= {"display", "set", "pack"}
             typ.add("multi")
@@ -331,10 +379,11 @@ def analyse(items):
             median_others = statistics.median(o["price"] for o in others)
             gap = 1 - it["price"] / cheapest_other["price"]
             gap_median = 1 - it["price"] / median_others
-            if gap >= MIN_GAP_VS_OTHERS or gap_median >= MIN_GAP_VS_OTHERS:
+            if gap >= 0 and (gap >= MIN_GAP_VS_OTHERS or gap_median >= MIN_GAP_VS_OTHERS):
                 outliers.append({
                     **it, "gap": gap, "gap_median": gap_median,
                     "next_store": cheapest_other["store"], "next_price": cheapest_other["price"],
+                    "next_url": cheapest_other["url"], "next_variant": cheapest_other.get("variant", ""),
                     "median_others": median_others,
                     "n_stores": len({o["store"] for o in others}),
                     "new": is_new(it),
@@ -364,12 +413,24 @@ def store_summary(stats):
     return working, len(stats), problems
 
 
+def variant_tag(r):
+    """A small note naming the option that was priced, when a product has several."""
+    return f" <small>[{escape(r['variant'])}]</small>" if r.get("variant") else ""
+
+
+def next_cell(r):
+    """The next cheapest price as a link to that listing, so it can be opened and compared."""
+    label = f"${r['next_price']:.2f} ({escape(r['next_store'])})"
+    note = f"<br><small>{escape(r['next_variant'])}</small>" if r.get("next_variant") else ""
+    return f'<a href="{escape(r["next_url"])}">{label}</a>{note}'
+
+
 def build_html(outliers, unverified, stats, items_checked):
     working, total, problems = store_summary(stats)
 
     def link(r):
         tag = " (NEW)" if r["new"] else ""
-        return f'<a href="{escape(r["url"])}">{escape(r["title"])}</a> at {escape(r["store"])}{tag}'
+        return f'<a href="{escape(r["url"])}">{escape(r["title"])}</a> at {escape(r["store"])}{tag}' + variant_tag(r)
 
     parts = [f"<p>Checked {items_checked} in-stock sealed products from {working} of {total} stores "
              f"on {datetime.now().strftime('%a %d %b %Y')}.</p>"]
@@ -382,7 +443,7 @@ def build_html(outliers, unverified, stats, items_checked):
         for r in outliers:
             parts.append(
                 f"<tr><td>{link(r)}</td><td>${r['price']:.2f}</td>"
-                f"<td>${r['next_price']:.2f} ({escape(r['next_store'])})</td>"
+                f"<td>{next_cell(r)}</td>"
                                 f"<td>{r['gap']:.0%}<br>({r['gap_median']:.0%} vs median)"
                 + ("<br><em>check it is the same product</em>" if r["gap"] >= 0.6 and r["n_stores"] == 1 else "")
                 + f"</td><td>${r['median_others']:.2f}</td>"
