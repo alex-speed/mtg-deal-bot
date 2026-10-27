@@ -24,6 +24,11 @@ Usage:
 Settings come from environment variables:
     SITE_TITLE    the page heading (default: MTG sealed deals)
     SITE_KICKER   the small line above the heading (default: Daily deal scan)
+    SITE_NAV      the links in the bar at the top that switches between sites, written as
+                  Label|address;Label|address, for example
+                  Sealed|https://you.github.io/sealed-repo/;Singles|https://you.github.io/singles-repo/
+                  Leave it empty and no bar is shown. Only http and https addresses are accepted.
+    SITE_CURRENT  the label of the link that is this site, so it is highlighted (for example Sealed)
 """
 import argparse
 import hashlib
@@ -33,6 +38,7 @@ import re
 import sys
 from datetime import date, datetime, timezone
 from pathlib import Path
+from urllib.parse import urlsplit
 
 try:
     from zoneinfo import ZoneInfo
@@ -112,6 +118,20 @@ body::after{
 a{color:var(--link);text-decoration:none;border-bottom:1px solid rgba(185,198,255,.28);transition:color .15s,border-color .15s}
 a:hover{color:#fff;border-bottom-color:var(--gold)}
 a:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:3px}
+
+/* the bar that switches between the sealed and singles sites */
+.sites{position:sticky;top:0;z-index:5;border-bottom:1px solid var(--line);background:rgba(4,6,26,.82);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.sites-in{display:flex;align-items:stretch;gap:.2rem;max-width:var(--w);margin:0 auto;padding:0 var(--pad)}
+.sites .brand{display:flex;align-items:center;gap:.6rem;margin-right:auto;font:600 11.5px/1 var(--mono);letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
+.sites .brand::before{content:"";width:12px;height:12px;border-radius:50%;
+  background:radial-gradient(circle,#000 34%,var(--gold) 40%,rgba(244,194,79,.35) 58%,transparent 72%);box-shadow:0 0 10px rgba(244,194,79,.35)}
+.sites a{display:flex;align-items:center;padding:.85rem 1.2rem;border:0;border-bottom:2px solid transparent;color:var(--muted);
+  font-weight:600;font-size:.9rem;letter-spacing:.04em;transition:color .15s,border-color .15s,background .15s}
+.sites a:hover{color:#fff;border-bottom-color:rgba(244,194,79,.55)}
+.sites a[aria-current]{color:#fff;border-bottom-color:var(--gold);background:linear-gradient(180deg,transparent,rgba(244,194,79,.12))}
+.sites a:focus-visible{outline-offset:-4px}
+main.wrap{scroll-margin-top:64px}
 
 /* masthead */
 .mast{position:relative;overflow:hidden;border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(165,139,255,.10),transparent 90%)}
@@ -220,15 +240,22 @@ hr{border:0;height:1px;background:var(--line);margin:1.5rem 0}
 footer.foot{padding-top:1.4rem;padding-bottom:2.4rem;color:var(--faint);font-size:.82rem;border-top:1px solid var(--line)}
 footer.foot p{margin:.2rem 0}
 
+@media (max-width:420px){
+  .sites .brand{display:none}
+  .sites-in{padding:0}
+  .sites a{flex:1;justify-content:center;padding-left:.6rem;padding-right:.6rem}
+}
 @media (max-width:720px){
   body{font-size:14.5px}
   .void{opacity:.5;right:-134px;top:34%;width:215px}
+  table{min-width:640px}
+  td{min-width:84px}
   th,td{padding:.6rem .7rem}
   h3{font-size:1rem}
 }
 @media print{
   html,body{background:#fff !important;color:#000 !important}
-  body::before,body::after,.void,nav.pills,.skip{display:none !important}
+  body::before,body::after,.void,nav.pills,.sites,.skip{display:none !important}
   h1{color:#000 !important;background:none !important;-webkit-text-fill-color:#000}
   .tablewrap,main li,div[style*="border:1px solid #999"]{background:#fff !important;box-shadow:none !important;border-color:#999 !important}
   a{color:#000;border-bottom:0}
@@ -236,7 +263,7 @@ footer.foot p{margin:.2rem 0}
 """
 
 # ---------------------------------------------------------------------------------------------------
-# Page templates (placeholders are written @@LIKE_THIS@@ so the CSS and HTML braces need no escaping)
+# Page template (placeholders are written @@LIKE_THIS@@ so the CSS and HTML braces need no escaping)
 # ---------------------------------------------------------------------------------------------------
 
 ICON = ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E"
@@ -259,7 +286,7 @@ PAGE = """<!doctype html>
 </head>
 <body>
 <a class="skip" href="#main">Skip to the deals</a>
-<header class="mast">
+@@SWITCH@@<header class="mast">
 <div class="void" aria-hidden="true"><i></i></div>
 <div class="mast-in">
 <p class="kicker">@@KICKER@@</p>
@@ -336,7 +363,53 @@ def css_version():
     return hashlib.sha1(CSS.encode("utf-8")).hexdigest()[:8]
 
 
-def render(*, site_title, kicker, heading, sub, body, depth, current, built, doc_title):
+BRAND = "MTG deals"
+MAX_LABEL = 24
+
+
+def parse_sites(spec):
+    """
+    Reads  Label|address;Label|address  into [(label, address)]. Returns (sites, warnings).
+    Only complete http and https addresses are kept, so a typo or an unsafe address can never become a link.
+    """
+    sites, warnings, seen = [], [], set()
+    for chunk in re.split(r"[;\n]+", spec or ""):
+        chunk = chunk.strip()
+        if not chunk:
+            continue
+        label, sep, address = chunk.partition("|")
+        label, address = label.strip(), address.strip()
+        if not sep or not label or not address:
+            warnings.append(f"ignored '{chunk}': it should look like Label|https://address")
+            continue
+        parts = urlsplit(address)
+        if parts.scheme not in ("http", "https") or not parts.netloc or " " in address:
+            warnings.append(f"ignored '{chunk}': the address must start with https:// (or http://) and have no spaces")
+            continue
+        if len(label) > MAX_LABEL:
+            warnings.append(f"ignored '{chunk}': the label is longer than {MAX_LABEL} characters")
+            continue
+        if label.lower() in seen:
+            warnings.append(f"ignored '{chunk}': the label {label} is already used")
+            continue
+        seen.add(label.lower())
+        sites.append((label, address))
+    return sites, warnings
+
+
+def render_switch(sites, current):
+    """The bar at the top of every page. Empty when there are no links."""
+    if not sites:
+        return ""
+    cur = (current or "").strip().lower()
+    links = "".join(
+        f'<a href="{html.escape(address, quote=True)}"' + (' aria-current="page"' if label.lower() == cur else "")
+        + f">{html.escape(label)}</a>" for label, address in sites)
+    return (f'<nav class="sites" aria-label="Sites"><div class="sites-in">'
+            f'<span class="brand">{html.escape(BRAND)}</span>{links}</div></nav>\n')
+
+
+def render(*, site_title, kicker, heading, sub, body, depth, current, built, doc_title, switch=""):
     """Builds one full page. depth is 0 for the front page and 1 for pages inside archive/."""
     prefix = "../" if depth else ""
     latest, earlier = ("../", "./") if depth else ("./", "archive/")
@@ -345,7 +418,7 @@ def render(*, site_title, kicker, heading, sub, body, depth, current, built, doc
            f'<a href="{earlier}"{here if current == "archive" else ""}>Earlier reports</a>')
     values = {"BUILT": html.escape(built, quote=True), "TITLE": html.escape(doc_title), "ICON": ICON,
               "PREFIX": prefix, "VER": css_version(), "KICKER": html.escape(kicker), "HEADING": html.escape(heading),
-              "SUB": sub, "NAV": nav, "BODY": body}
+              "SUB": sub, "NAV": nav, "BODY": body, "SWITCH": switch}
     out = PAGE
     for key, value in values.items():
         out = out.replace(f"@@{key}@@", value)
@@ -387,8 +460,8 @@ def dated_files(archive_dir):
     return sorted(days, reverse=True)
 
 
-def build(report_path, out_dir, title, kicker, keep=KEEP_DAYS, now=None):
-    """Writes the site. Returns a short summary dictionary."""
+def build(report_path, out_dir, title, kicker, keep=KEEP_DAYS, now=None, sites=None, current_site=""):
+    """Writes the site. sites is a list of (label, address) for the bar at the top. Returns a short summary."""
     out = Path(out_dir)
     archive = out / "archive"
     raw = Path(report_path).read_text(encoding="utf-8", errors="replace")
@@ -399,7 +472,7 @@ def build(report_path, out_dir, title, kicker, keep=KEEP_DAYS, now=None):
     (out / "style.css").write_text(CSS.lstrip("\n"), encoding="utf-8")
 
     sub_latest = f'Last scan <time datetime="{now.isoformat(timespec="minutes")}">{html.escape(when)}</time> {TZ_LABEL}'
-    common = dict(site_title=title, kicker=kicker, heading=title)
+    common = dict(site_title=title, kicker=kicker, heading=title, switch=render_switch(sites or [], current_site))
     # today's report, as the front page and as a dated page
     (out / "index.html").write_text(render(**common, sub=sub_latest, body=report_body(raw), depth=0,
                                            current="latest", built=when, doc_title=title), encoding="utf-8")
@@ -445,7 +518,13 @@ def main(argv=None):
         return 0
     title = os.environ.get("SITE_TITLE") or "MTG sealed deals"
     kicker = os.environ.get("SITE_KICKER") or "Daily deal scan"
-    info = build(args.report, args.out, title, kicker, keep=max(args.keep, 1))
+    sites, warnings = parse_sites(os.environ.get("SITE_NAV", ""))
+    for w in warnings:
+        print(f"SITE_NAV: {w}")
+    current = os.environ.get("SITE_CURRENT", "")
+    if sites and current and current.strip().lower() not in {l.lower() for l, _ in sites}:
+        print(f"SITE_CURRENT: '{current}' does not match any label in SITE_NAV, so no link is highlighted")
+    info = build(args.report, args.out, title, kicker, keep=max(args.keep, 1), sites=sites, current_site=current)
     print(f"Site written to {args.out}: report for {info['today']}, {info['kept']} dated page(s), "
           f"{info['restyled']} restyled" + (f", could not restyle {', '.join(info['skipped'])}" if info["skipped"] else ""))
     return 0
