@@ -59,6 +59,20 @@ a{color:var(--link);text-decoration:none;border-bottom:1px solid rgba(185,198,25
 a:hover{color:#fff;border-bottom-color:var(--gold)}
 a:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:3px}
 
+/* the bar that switches between the sealed and singles sites */
+.sites{position:sticky;top:0;z-index:5;border-bottom:1px solid var(--line);background:rgba(4,6,26,.82);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.sites-in{display:flex;align-items:stretch;gap:.2rem;max-width:var(--w);margin:0 auto;padding:0 var(--pad)}
+.sites .brand{display:flex;align-items:center;gap:.6rem;margin-right:auto;font:600 11.5px/1 var(--mono);letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
+.sites .brand::before{content:"";width:12px;height:12px;border-radius:50%;
+  background:radial-gradient(circle,#000 34%,var(--gold) 40%,rgba(244,194,79,.35) 58%,transparent 72%);box-shadow:0 0 10px rgba(244,194,79,.35)}
+.sites a{display:flex;align-items:center;padding:.85rem 1.2rem;border:0;border-bottom:2px solid transparent;color:var(--muted);
+  font-weight:600;font-size:.9rem;letter-spacing:.04em;transition:color .15s,border-color .15s,background .15s}
+.sites a:hover{color:#fff;border-bottom-color:rgba(244,194,79,.55)}
+.sites a[aria-current]{color:#fff;border-bottom-color:var(--gold);background:linear-gradient(180deg,transparent,rgba(244,194,79,.12))}
+.sites a:focus-visible{outline-offset:-4px}
+main.wrap{scroll-margin-top:64px}
+
 /* masthead */
 .mast{position:relative;overflow:hidden;border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(165,139,255,.10),transparent 90%)}
 .mast-in{position:relative;z-index:1;max-width:var(--w);margin:0 auto;padding:clamp(30px,6vw,66px) var(--pad) clamp(24px,4vw,42px)}
@@ -166,15 +180,22 @@ hr{border:0;height:1px;background:var(--line);margin:1.5rem 0}
 footer.foot{padding-top:1.4rem;padding-bottom:2.4rem;color:var(--faint);font-size:.82rem;border-top:1px solid var(--line)}
 footer.foot p{margin:.2rem 0}
 
+@media (max-width:420px){
+  .sites .brand{display:none}
+  .sites-in{padding:0}
+  .sites a{flex:1;justify-content:center;padding-left:.6rem;padding-right:.6rem}
+}
 @media (max-width:720px){
   body{font-size:14.5px}
   .void{opacity:.5;right:-134px;top:34%;width:215px}
+  table{min-width:640px}
+  td{min-width:84px}
   th,td{padding:.6rem .7rem}
   h3{font-size:1rem}
 }
 @media print{
   html,body{background:#fff !important;color:#000 !important}
-  body::before,body::after,.void,nav.pills,.skip{display:none !important}
+  body::before,body::after,.void,nav.pills,.sites,.skip{display:none !important}
   h1{color:#000 !important;background:none !important;-webkit-text-fill-color:#000}
   .tablewrap,main li,div[style*="border:1px solid #999"]{background:#fff !important;box-shadow:none !important;border-color:#999 !important}
   a{color:#000;border-bottom:0}
