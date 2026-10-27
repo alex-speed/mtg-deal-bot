@@ -174,14 +174,14 @@ def parse_shopify(store, base, p):
     in_stock = [v for v in p.get("variants", []) if v.get("available")]
     if not in_stock:
         return None
-        cheapest, solo = pick_variant(title, f"{base}/products/{p.get('handle', '')}", p.get("variants", []), in_stock)
+    cheapest, solo = pick_variant(title, f"{base}/products/{p.get('handle', '')}", p.get("variants", []), in_stock)
     if cheapest is None:
         return None
     price = float(cheapest["price"])
     was = float(cheapest["compare_at_price"]) if cheapest.get("compare_at_price") else 0.0
     if price <= 0:
         return None
-        item = make_item(store, title, f"{base}/products/{p.get('handle', '')}", price, was, p.get("published_at"))
+    item = make_item(store, title, f"{base}/products/{p.get('handle', '')}", price, was, p.get("published_at"))
     item["solo"] = solo
     label = (cheapest.get("title") or "").strip()
     item["variant"] = label if len(p.get("variants", [])) > 1 and label.lower() != "default title" else ""
@@ -444,7 +444,7 @@ def build_html(outliers, unverified, stats, items_checked):
             parts.append(
                 f"<tr><td>{link(r)}</td><td>${r['price']:.2f}</td>"
                 f"<td>{next_cell(r)}</td>"
-                                f"<td>{r['gap']:.0%}<br>({r['gap_median']:.0%} vs median)"
+                f"<td>{r['gap']:.0%}<br>({r['gap_median']:.0%} vs median)"
                 + ("<br><em>check it is the same product</em>" if r["gap"] >= 0.6 and r["n_stores"] == 1 else "")
                 + f"</td><td>${r['median_others']:.2f}</td>"
                 f"<td>{r['n_stores']}</td></tr>")
@@ -522,6 +522,7 @@ def main():
         send_mail(subject, html)
         print(subject, "-> email sent")
     return 0
+
 
 import store_config
 store_config.load_into(globals(), "stores-sealed.txt", kind="sealed")
