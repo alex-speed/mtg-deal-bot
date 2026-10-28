@@ -70,13 +70,17 @@ SHOPIFY_STORES = [
 ]
 
 # WooCommerce stores: (store name, site address). The bot uses WooCommerce's public Store API
-# and searches for "magic the gathering". This part has not been tested against live sites.
+# and searches for each of the WOO_SEARCH_TERMS below. This part has not been tested against live sites.
 WOO_STORES = [
     ("Games World", "https://www.gamesworld.com.au"),
     ("JToys", "https://www.jtoys.com.au"),
     ("TC Game Australia", "https://tcgameaustralia.com"),
     ("Mind Games", "https://www.m-g.com.au"),
 ]
+
+# Some stores title their products "MTG - Aetherdrift - Bundle" and never write "Magic the Gathering",
+# so one search term is not enough. Each term is searched in turn and the results are combined.
+WOO_SEARCH_TERMS = ["magic the gathering", "mtg"]
 
 # Titles containing any of these words are ignored (whole words, plural allowed).
 EXCLUDE_WORDS = [
@@ -89,7 +93,7 @@ EXCLUDE_WORDS = [
 SEALED_WORDS = ["booster", "bundle", "deck", "draft night", "jumpstart", "scene box", "beginner",
                 "prerelease", "starter", "display", "box", "kit", "pack"]
 
-REQUIRE_MTG_WORD = True        # title must also contain "magic" or "mtg"
+REQUIRE_MTG_WORD = True        # title must also contain "magic" or "mtg" (unless the collection is named for Magic)
 MIN_GAP_VS_OTHERS = 0.25       # flag if price is 25% or more below the cheapest other store
 MIN_DISCOUNT_UNVERIFIED = 0.45 # no comparison available: list if 45%+ off its own "was" price
 NEW_LISTING_DAYS = 3           # tag products published within this many days as NEW
@@ -107,14 +111,37 @@ _SEALED_RE = re.compile(r"\b(?:" + "|".join(re.escape(w) for w in SEALED_WORDS) 
 _MTG_RE = re.compile(r"\b(?:magic|mtg)\b", re.I)
 
 
-def wanted(title):
-    """True if the title looks like a sealed MTG product we care about."""
+# Words that mark a product from another game. In a collection named for Magic a title does not need the
+# word Magic, but a title that names one of these games is still skipped.
+_OTHER_GAME_RE = re.compile(
+    r"\b(?:pok[eé]mon|yu-?gi-?oh|lorcana|one piece|riftbound|flesh and blood|digimon|dragon ball|gundam|"
+    r"star wars|sorcery|vanguard|topps|baseball|warhammer|disney)\b", re.I)
+
+# A title that leaves out the word Magic must contain one of these clear sealed-product words. This stops a card
+# called "Pack Rat" or "Pandora's Box" being mistaken for a sealed product.
+_STRONG_SEALED_RE = re.compile(
+    r"\b(?:booster|bundle|display|draft night|prerelease|jumpstart|scene box|beginner|starter|commander deck)s?\b", re.I)
+
+# Collections for singles, binders and ban lists are never trusted, whatever else the name says.
+_SINGLES_HANDLE_RE = re.compile(r"single|binder|banlist|ban-list|buylist|bulk", re.I)
+
+
+def is_magic_collection(handle):
+    """True when a collection's name says it holds Magic products, such as magic-the-gathering-sealed or mtg-bundles."""
+    h = handle or ""
+    return bool(re.search(r"magic|mtg", h, re.I)) and not _SINGLES_HANDLE_RE.search(h)
+
+
+def wanted(title, trusted=False):
+    """True if the title looks like a sealed MTG product we care about.
+    trusted is True for a collection named for Magic, where a title may leave out the word Magic."""
     if _EXCLUDE_RE.search(title):
         return False
     if not _SEALED_RE.search(title):
         return False
     if REQUIRE_MTG_WORD and not _MTG_RE.search(title):
-        return False
+        if not trusted or _OTHER_GAME_RE.search(title) or not _STRONG_SEALED_RE.search(title):
+            return False
     return True
 
 
@@ -167,9 +194,9 @@ def pick_variant(title, url, variants, in_stock):
     return lowest, True
 
 
-def parse_shopify(store, base, p):
+def parse_shopify(store, base, p, trusted=False):
     title = p.get("title", "")
-    if not wanted(title):
+    if not wanted(title, trusted):
         return None
     in_stock = [v for v in p.get("variants", []) if v.get("available")]
     if not in_stock:
@@ -219,9 +246,17 @@ def fetch_all():
             items.append(item)
             st["products"] += 1
 
+    def note(item, name, st):
+        """Counts a product the store returned, and keeps the first few titles that were skipped."""
+        st["read"] += 1
+        if item is None and len(st["samples"]) < 3:
+            st["samples"].append(unescape(name or "")[:70])
+
     for store, base, handles in SHOPIFY_STORES:
-        st = stats[store] = {"kind": "Shopify", "tried": len(handles), "ok": 0, "products": 0, "errors": []}
+        st = stats[store] = {"kind": "Shopify", "tried": len(handles), "ok": 0, "products": 0, "read": 0,
+                             "samples": [], "errors": []}
         for handle in handles:
+            trusted = is_magic_collection(handle)
             for page in range(1, MAX_PAGES + 1):
                 url = f"{base}/collections/{handle}/products.json"
                 try:
@@ -234,25 +269,31 @@ def fetch_all():
                 if not products:
                     break
                 for p in products:
-                    add(parse_shopify(store, base, p), st)
+                    item = parse_shopify(store, base, p, trusted)
+                    note(item, p.get("title"), st)
+                    add(item, st)
                 if len(products) < 250:
                     break
 
     for store, base in WOO_STORES:
-        st = stats[store] = {"kind": "WooCommerce", "tried": 1, "ok": 0, "products": 0, "errors": []}
-        for page in range(1, MAX_PAGES + 1):
-            try:
-                products = http_get_json(f"{base}/wp-json/wc/store/v1/products",
-                                         {"search": "magic the gathering", "per_page": 100, "page": page})
-            except Exception as exc:
-                st["errors"].append(str(exc))
-                break
-            if page == 1:
-                st["ok"] += 1
-            for p in products:
-                add(parse_woo(store, p), st)
-            if len(products) < 100:
-                break
+        st = stats[store] = {"kind": "WooCommerce", "tried": len(WOO_SEARCH_TERMS), "ok": 0, "products": 0,
+                             "read": 0, "samples": [], "errors": []}
+        for term in WOO_SEARCH_TERMS:
+            for page in range(1, MAX_PAGES + 1):
+                try:
+                    products = http_get_json(f"{base}/wp-json/wc/store/v1/products",
+                                             {"search": term, "per_page": 100, "page": page})
+                except Exception as exc:
+                    st["errors"].append(f"{term}: {exc}")
+                    break
+                if page == 1:
+                    st["ok"] += 1
+                for p in products:
+                    item = parse_woo(store, p)
+                    note(item, p.get("name"), st)
+                    add(item, st)
+                if len(products) < 100:
+                    break
     return items, stats
 
 
@@ -408,8 +449,12 @@ def store_summary(stats):
         if s["ok"] == 0:
             first = s["errors"][0] if s["errors"] else "no response"
             problems.append(f"{name}: no collection could be read (first error: {first})")
+        elif s["products"] == 0 and s["read"] == 0:
+            problems.append(f"{name}: readable, but it returned no products at all, so the collection name may be wrong or empty")
         elif s["products"] == 0:
-            problems.append(f"{name}: readable, but no in-stock sealed MTG products matched the filters")
+            examples = "; ".join(s["samples"])
+            problems.append(f"{name}: {s['read']} products were read but none were kept (sold out, not sealed MTG, "
+                            f"or filtered out). Examples of skipped titles: {examples}")
     return working, len(stats), problems
 
 
@@ -465,10 +510,10 @@ def build_html(outliers, unverified, stats, items_checked):
 
     parts.append("<h3>Store check</h3>")
     parts.append('<table border="1" cellpadding="4" cellspacing="0" style="border-collapse:collapse">'
-                 "<tr><th>Store</th><th>Type</th><th>Collections read</th><th>Products kept</th></tr>")
+                 "<tr><th>Store</th><th>Type</th><th>Collections read</th><th>Products read</th><th>Products kept</th></tr>")
     for name, s in stats.items():
         parts.append(f"<tr><td>{escape(name)}</td><td>{s['kind']}</td>"
-                     f"<td>{s['ok']} of {s['tried']}</td><td>{s['products']}</td></tr>")
+                     f"<td>{s['ok']} of {s['tried']}</td><td>{s['read']}</td><td>{s['products']}</td></tr>")
     parts.append("</table>")
 
     if problems:
