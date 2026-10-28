@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 deal_history.py: remembers the deals the sealed product bot has already reported, so a report can
-either show only the deals that are new, or show every deal with the new ones highlighted.
+either show only the deals that are new, or show every deal with the newer ones tagged.
 
 Safe to run in production? Yes. It reads and writes one small JSON file next to the bot script and
 makes no web requests. It changes nothing in your tenant or on any server.
@@ -14,20 +14,25 @@ if __name__ == "__main__":  ):
 
 Nothing changes unless the environment variable ONLY_NEW is set. Its value picks the behaviour:
 
-    ONLY_NEW=highlight   show every current deal. Deals first seen today get a red NEW badge and a
-                         yellow background, deals whose price has dropped get an orange PRICE DROP
-                         badge, and both groups are sorted to the top of their table. The history file
-                         is updated after the bot finishes without an error.
+    ONLY_NEW=highlight   show every current deal and tag it by how long ago it was first found:
+                           NEW          first found today (gold row, red badge in an email)
+                           RECENT       first found in the last RECENT_DAYS days, before today
+                                        (lavender row, purple badge)
+                           PRICE DROP   the price has fallen (orange row and badge)
+                           no tag       older deals
+                         NEW, PRICE DROP and RECENT deals are sorted to the top of their table, in that
+                         order. The history file is updated after the bot finishes without an error.
     ONLY_NEW=1           show only deals not reported before (the older behaviour), plus price drops.
     (not set)            nothing changes and the history file is left alone.
 
 A deal is one listing (store and page address). A deal is a price drop when its price falls by at
 least PRICE_DROP_PERCENT percent and at least PRICE_DROP_MIN_DOLLARS below the lowest price reported
 so far. A deal that has not appeared for HISTORY_GRACE_DAYS days is forgotten, so it counts as new if
-it comes back. Dates are Adelaide dates. Highlighting lasts HIGHLIGHT_DAYS days.
+it comes back. Dates are Adelaide dates.
 
-Nothing is highlighted on the day the history file is created, because every deal would be new. The
-deals seen that day become the baseline. To start again from nothing, delete the history file.
+Nothing is tagged on the day the history file is created, because every deal would be new. The deals
+seen that day become the baseline, and they never get a NEW or RECENT tag. To start again from
+nothing, delete the history file.
 """
 import copy
 import json
@@ -47,16 +52,21 @@ except Exception:  # no time zone database: use UTC dates instead
 HISTORY_GRACE_DAYS = 10        # forget a deal that has not appeared for this many days
 PRICE_DROP_PERCENT = 5.0       # a price drop is a fall of at least this many percent
 PRICE_DROP_MIN_DOLLARS = 2.0   # and at least this many dollars
-HIGHLIGHT_DAYS = 1             # how many days a new deal or price drop stays highlighted (1 = today only)
+HIGHLIGHT_DAYS = 1             # how many days a deal stays NEW (1 = the day it was first found)
+RECENT_DAYS = 3                # a deal stays RECENT until it is this many days old
 MAX_LIST_IN_NOTE = 20          # most new deals listed in the note at the top of the report
 TRUE_WORDS = {"1", "true", "yes", "on"}
 FORMAT_VERSION = 1
 
 NEW_COLOUR = "#fff3b0"
 DROP_COLOUR = "#ffe0b2"
+RECENT_COLOUR = "#e8e4ff"
 _BADGE_STYLE = "color:#fff;padding:1px 6px;border-radius:3px;font-size:11px;font-weight:bold"
 _BLOCK_RE = re.compile(r"<tr\b[^>]*>.*?</tr>|<li\b[^>]*>.*?</li>", re.S | re.I)
 _HREF_RE = re.compile(r'href="([^"]*)"')
+# The bot adds " (NEW)" after a store name when the store itself published the listing recently. The tags
+# here replace that, so it is removed in highlight mode. It is only matched straight after the store name.
+_STORE_NEW_RE = re.compile(r" \(NEW\)(?=</td>|</li>| <small>|:)")
 
 
 def _today():
@@ -88,6 +98,9 @@ def _money(x):
     return f"${x:,.2f}"
 
 
+_RANK = {"new": 0, "drop": 1, "recent": 2}
+
+
 class History:
     def __init__(self, path, mode="hide"):
         self.path = path
@@ -98,12 +111,12 @@ class History:
         self.first_run = False
         self.problem = None
         self.applied = False
-        self.active = False       # True when highlighting is switched on for this run
+        self.active = False       # True when tagging is switched on for this run
         self.new = 0
         self.hidden = 0
-        self.unchanged = 0
+        self.older = 0
         self.drops = []
-        self.marks = {}           # url -> details, for the deals to highlight
+        self.marks = {}           # url -> details, for the deals to tag
         self.total_current = 0
 
     # ---------------------------------------------------------------- reading
@@ -139,18 +152,20 @@ class History:
         """
         Returns (outliers, unverified).
         Mode hide: already reported deals are removed.
-        Mode highlight: every deal is kept, new ones and price drops are marked and sorted first.
-        Safe to call twice.
+        Mode highlight: every deal is kept, tagged NEW, PRICE DROP or RECENT where it applies, and sorted
+        so the tagged ones come first. Safe to call twice.
         """
         today = _today()
         today_s = today.isoformat()
-        since = (today - timedelta(days=max(HIGHLIGHT_DAYS, 1) - 1)).isoformat()
+        since = (today - timedelta(days=max(HIGHLIGHT_DAYS, 1) - 1)).isoformat()          # NEW starts here
+        recent_since = (today - timedelta(days=max(RECENT_DAYS, 0))).isoformat()          # RECENT starts here
         highlight = self.mode == "highlight"
-        # highlighting needs a history that began on an earlier day, otherwise every deal looks new
+        # tagging needs a history that began on an earlier day, otherwise every deal looks new
         self.active = bool(highlight and not self.first_run and not self.problem
                            and self.created and self.created < today_s)
+        baseline = self.created or ""
         deals = copy.deepcopy(self.loaded)
-        self.new, self.hidden, self.unchanged, self.drops, self.marks, self.total_current = 0, 0, 0, [], {}, 0
+        self.new, self.hidden, self.older, self.drops, self.marks, self.total_current = 0, 0, 0, [], {}, 0
         shown = {"outlier": [], "unverified": []}
         rank = {}
 
@@ -158,9 +173,10 @@ class History:
             url = item.get("url") or ""
             info = {"kind": kind, "title": item.get("title", ""), "store": item.get("store", ""),
                     "price": float(item["price"]), "was": was, "url": url}
-            if url not in self.marks or kind == "drop":
+            old = self.marks.get(url)
+            if old is None or _RANK[kind] < _RANK[old["kind"]]:
                 self.marks[url] = info
-            return 0 if kind == "new" else 1
+            return _RANK[kind]
 
         for kind, items in (("outlier", outliers), ("unverified", unverified)):
             for item in items:
@@ -176,7 +192,7 @@ class History:
                     if self.active:
                         rank[id(item)] = mark(item, "new")
                     elif highlight:
-                        self.unchanged += 1
+                        self.older += 1
                     continue
                 prev_price = float(prev["price"])
                 dropped = prev_price - price
@@ -195,13 +211,15 @@ class History:
                     shown[kind].append(item)
                     first_seen = str(prev.get("first_seen") or "")
                     drop_date = str(prev.get("drop_date") or "")
-                    if self.active and first_seen >= since and first_seen > (self.created or ""):
-                        rank[id(item)] = mark(item, "new")   # first seen on an earlier run inside the window
+                    if self.active and first_seen >= since and first_seen > baseline:
+                        rank[id(item)] = mark(item, "new")       # first found earlier today
                     elif self.active and drop_date >= since and price <= prev_price \
                             and isinstance(prev.get("drop_from"), (int, float)):
                         rank[id(item)] = mark(item, "drop", float(prev["drop_from"]))
+                    elif self.active and recent_since <= first_seen < since and first_seen > baseline:
+                        rank[id(item)] = mark(item, "recent")    # first found in the last few days
                     else:
-                        self.unchanged += 1
+                        self.older += 1
                 else:
                     self.hidden += 1
                 prev["last_seen"] = today_s
@@ -212,7 +230,7 @@ class History:
         for kind in ("outlier", "unverified"):
             items = shown[kind]
             if highlight:
-                items = sorted(items, key=lambda it: rank.get(id(it), 2))   # stable: keeps the bot's own order
+                items = sorted(items, key=lambda it: rank.get(id(it), 3))   # stable: keeps the bot's own order
             out.append(items)
         return out[0], out[1]
 
@@ -221,13 +239,19 @@ class History:
         if info["kind"] == "drop":
             was = f", was {_money(info['was'])}" if info.get("was") else ""
             return f'<span style="background:#e67e00;{_BADGE_STYLE}">PRICE DROP{was}</span> '
+        if info["kind"] == "recent":
+            return f'<span style="background:#6a5acd;{_BADGE_STYLE}">RECENT</span> '
         return f'<span style="background:#c00;{_BADGE_STYLE}">NEW</span> '
 
     def highlight_html(self, html):
-        """Marks the rows and list items for the new deals and price drops. Everything else is left alone."""
-        if self.mode != "highlight" or not self.active or not self.marks:
+        """Tags the rows and list items for new, recent and price drop deals. Everything else is left alone."""
+        if self.mode != "highlight":
+            return html
+        html = _STORE_NEW_RE.sub("", html)
+        if not self.active or not self.marks:
             return html
         by_href = {escape(url): info for url, info in self.marks.items() if url}
+        colours = {"new": NEW_COLOUR, "drop": DROP_COLOUR, "recent": RECENT_COLOUR}
 
         def fix(match):
             block = match.group(0)
@@ -235,7 +259,7 @@ class History:
             info = by_href.get(href.group(1)) if href else None
             if not info:
                 return block
-            colour = DROP_COLOUR if info["kind"] == "drop" else NEW_COLOUR
+            colour = colours[info["kind"]]
             badge = self._badge(info)
             end = block.index(">") + 1
             opening, rest = block[:end], block[end:]
@@ -280,20 +304,22 @@ class History:
 
     def _note_highlight(self):
         news = [m for m in self.marks.values() if m["kind"] == "new"]
+        recents = [m for m in self.marks.values() if m["kind"] == "recent"]
         drops = [m for m in self.marks.values() if m["kind"] == "drop"]
         parts = ['<div style="border:1px solid #999;padding:6px 10px;margin-bottom:12px">']
         if self.active:
             parts.append(f"<p><b>All {self.total_current} current deals are shown.</b> "
-                         f"{len(news)} new (yellow, red NEW badge), {len(drops)} price drop(s) "
-                         f"(orange badge), {self.unchanged} unchanged since earlier reports. "
-                         "New deals and price drops are listed first in each table.</p>")
+                         f"{len(news)} new (yellow, red NEW badge), "
+                         f"{len(recents)} recent, found in the last {RECENT_DAYS} days (lavender, purple RECENT badge), "
+                         f"{len(drops)} price drop(s) (orange badge), {self.older} older with no tag. "
+                         "New deals and price drops are listed first in each table, then recent ones.</p>")
         else:
             why = ("the history could not be read" if self.problem else
                    "the history started today" if (self.first_run or self.created == _today().isoformat())
                    else "the history has no start date")
             parts.append(f"<p><b>All {self.total_current} current deals are shown.</b> "
-                         f"Nothing is highlighted yet because {why}. "
-                         "From the next day's report, new deals will be highlighted.</p>")
+                         f"Nothing is tagged yet because {why}. "
+                         "From the next day's report, new deals will be tagged.</p>")
             if self.problem:
                 parts.append(f"<p>Note: {escape(self.problem)}.</p>")
         if news:
@@ -304,7 +330,7 @@ class History:
                     label = f'<a href="{escape(m["url"])}">{label}</a>'
                 parts.append(f"<li>{label} at {escape(m['store'])}: {_money(m['price'])}</li>")
             if len(news) > MAX_LIST_IN_NOTE:
-                parts.append(f"<li>and {len(news) - MAX_LIST_IN_NOTE} more, highlighted below</li>")
+                parts.append(f"<li>and {len(news) - MAX_LIST_IN_NOTE} more, tagged below</li>")
             parts.append("</ul>")
         if drops:
             parts.append("<p>Price drops:</p><ul>")
@@ -339,9 +365,10 @@ class History:
     def summary_line(self):
         if self.mode == "highlight":
             n_new = sum(1 for m in self.marks.values() if m["kind"] == "new")
+            n_recent = sum(1 for m in self.marks.values() if m["kind"] == "recent")
             n_drop = sum(1 for m in self.marks.values() if m["kind"] == "drop")
-            return (f"Deal history (highlight): {n_new} new, {n_drop} price drop(s), {self.unchanged} unchanged, "
-                    f"{len(self.deals)} deals remembered")
+            return (f"Deal history (highlight): {n_new} new, {n_recent} recent, {n_drop} price drop(s), "
+                    f"{self.older} older, {len(self.deals)} deals remembered")
         return (f"Deal history: {self.new} new, {len(self.drops)} price drop(s), {self.hidden} hidden "
                 f"(already reported), {len(self.deals)} deals remembered")
 
