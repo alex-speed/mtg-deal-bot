@@ -11,7 +11,7 @@
 #   Collection  the last part of the collection address. Separate several with commas.
 #   Options     optional, separated by commas:
 #                 off     skip this line without deleting it
-#                 woo     a WooCommerce store. Leave Collection empty. The bot searches for Magic.
+#                 woo     a WooCommerce store. Leave Collection empty. The bot searches for Magic and MTG.
 #                 page    a store whose web pages are read directly. Collection holds the page
 #                         addresses, for example /brand/magic-the-gathering
 #
@@ -22,6 +22,11 @@
 # To add another collection to a store that is already listed, write another line with the same name
 # and website.
 #
+#
+# A collection whose name contains "magic" or "mtg" is trusted: its products do not need the word Magic in
+# their title, but they must still say booster, bundle, display, commander deck or similar. Collections with
+# other names (for example preorder or tcgs) still need the word Magic. Names with single, binder, banlist,
+# buylist or bulk are never trusted.
 
 Goldfields | https://goldfieldsgames.com.au | magic-the-gathering, mtg-commander-decks, mtg-booster-packs-boxes
 Gameology | https://www.gameology.com.au | magic-the-gathering-booster-boxes, magic-the-gathering, trading-card-game-clearance, mtg-lorwyn-eclipsed, magic-reality-fracture
@@ -29,7 +34,8 @@ Good Games | https://www.goodgames.com.au | magic-the-gathering-marvel-super-her
 Behold Games | https://beholdgames.com.au | on-sale/magic-the-gathering, magic-the-gathering-foundations-commander, magic-the-gathering
 Games Empire | https://gamesempire.com.au | clearance-sale/magic-the-gathering, mid-year-sale/magic-the-gathering, magic-the-gathering
 Combat Company | https://thecombatcompany.com | magic-the-gathering-clearance, magic-the-gathering
-JB Hi-Fi | https://www.jbhifi.com.au | collectibles-merchandise/magic-the-gathering
+# Switched off: JB Hi-Fi returned not found, so it is not a standard Shopify store.
+JB Hi-Fi | https://www.jbhifi.com.au | collectibles-merchandise/magic-the-gathering | off
 General Games | https://www.generalgames.com.au | magic-the-gathering
 Tactical TCG | https://www.tacticaltcg.com.au | magic-sealed
 Tabletop Commons | https://tabletopcommons.com.au | magic-the-gathering-sealed
@@ -37,14 +43,18 @@ AWNO Games | https://www.awnogames.com.au | magic-the-gathering/sealedbox, magic
 Cherry Collectables | https://www.cherrycollectables.com.au | magic-the-gathering
 Collector Smith | https://www.thecollectorsmith.com.au | mtg-cards
 Aussie Hobbies | https://www.aussiehobbies.com.au | magic-the-gathering
-Gap Games | https://www.gapgames.com.au | magic-the-gathering
-Pokebox | https://www.pokebox.com.au | magic-the-gathering
-Mighty Toys | https://mightytoys.com.au | magic-the-gathering
+# Gap Games: added tcgs, the collection that holds its Magic decks and boxes (seen on its live page).
+Gap Games | https://www.gapgames.com.au | magic-the-gathering, tcgs
+# Pokebox: added the two Magic collection names seen on its live pages (235 and 91 products).
+Pokebox | https://www.pokebox.com.au | magic-the-gathering, magic-the-gathering-trading-card-games, magic-the-gatherings-booster
+# Switched off: Mighty Toys returned not found. Its Magic page is /products/magic-the-gathering, so it is probably not Shopify.
+Mighty Toys | https://mightytoys.com.au | magic-the-gathering | off
 GB Toys | https://gbtoys.com.au | magic-the-gathering
 Mint Collectables | https://mintcollectables.com.au | magic-the-gathering
 Games World | https://www.gamesworld.com.au | | woo
 JToys | https://www.jtoys.com.au | | woo
-TC Game Australia | https://tcgameaustralia.com | | woo
+# Switched off: tcgameaustralia.com did not answer the WooCommerce search and sells Japanese Pokemon, One Piece and Dragon Ball. TCGroupAU below is the Magic store.
+TC Game Australia | https://tcgameaustralia.com | | woo, off
 Mind Games | https://www.m-g.com.au | | woo
 The Gamesmen | https://www.gamesmen.com.au | /brand/magic-the-gathering, /sale/trading-cards-sale/brand/magic-the-gathering | page
 Shuffled | https://shuffled.com.au/collections/magic-the-gathering | magic-the-gathering
@@ -69,18 +79,25 @@ Spellroo Gaming | https://spellroogaming.com.au | magic-the-gathering-sealed
 Playmantis | https://playmantis.com.au | magic-the-gathering-all-sealed-products 
 Tabernacle Games | https://tcg.tabernaclegames.com.au | sealed-mtg 
 Gameology | https://www.gameology.com.au | magic-tcg
-Manamarket | https://manamarket.com.au | magic-the-gathering-commander-masters-singles
-Manamarket | https://manamarket.com.au | magic-the-gathering-innistrad-crimson-vow-commander-singles
+# Switched off: a singles, binder or ban list collection. The sealed bot has no use for it.
+Manamarket | https://manamarket.com.au | magic-the-gathering-commander-masters-singles | off
+Manamarket | https://manamarket.com.au | magic-the-gathering-innistrad-crimson-vow-commander-singles | off
 Manamarket | https://manamarket.com.au | magic-the-gathering-sealed
 Elementalarcade | https://elementalarcade.com.au | magic-the-gathering-sealed-products
-Elementalarcade | https://elementalarcade.com.au | magic-the-gathering-tcg-singles
-Elementalarcade | https://elementalarcade.com.au | magic-the-gathering-digital-binder
+Elementalarcade | https://elementalarcade.com.au | magic-the-gathering-tcg-singles | off
+Elementalarcade | https://elementalarcade.com.au | magic-the-gathering-digital-binder | off
 Fromthedeepgames | https://fromthedeepgames.com.au | mtg-sealed
-Fromthedeepgames | https://fromthedeepgames.com.au | mtg-singles-instock
-Fromthedeepgames | https://fromthedeepgames.com.au | mtg-singles-all-products
+Fromthedeepgames | https://fromthedeepgames.com.au | mtg-singles-instock | off
+Fromthedeepgames | https://fromthedeepgames.com.au | mtg-singles-all-products | off
 Inngames | https://inngames.com.au | mtg-sealed-booster-boxes
 Inngames | https://inngames.com.au | mtg-sealed-booster-packs
 Inngames | https://inngames.com.au | mtg-decks
-Gamesportal | https://gamesportal.com.au | magic-msh-set-singles-copy
+Gamesportal | https://gamesportal.com.au | magic-msh-set-singles-copy | off
 Gamesportal | https://gamesportal.com.au | sealed-magic-products
-Gamesportal | https://gamesportal.com.au | magic-banlist-commander
+Gamesportal | https://gamesportal.com.au | magic-banlist-commander | off
+
+# ---- Added in this update (collection names seen on live pages) ----
+TCGroupAU | https://www.tcgroupau.com.au | magic-the-gathering, magic-the-gathering-booster-boxes
+Games World SA | https://www.gamesworldsa.com.au | magic-the-gathering
+Ronin Games | https://roningames.com.au | magic-the-gathering-sealed-product
+Manamarket | https://manamarket.com.au | magic-the-gathering-booster-boxes
