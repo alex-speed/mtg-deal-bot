@@ -97,6 +97,30 @@
    "store": "Combat Company",
    "title": "Magic: The Gathering - The Hobbit Crack the Plates Scene Box"
   },
+  "outlier|Elementalarcade|elementalarcade.com.au/products/avatar-the-last-airbender-beginner-box": {
+   "first_seen": "2026-10-29",
+   "last_seen": "2026-10-29",
+   "price": 40.0,
+   "reported": "2026-10-29",
+   "store": "Elementalarcade",
+   "title": "Avatar the Last Airbender - Beginner Box"
+  },
+  "outlier|Elementalarcade|elementalarcade.com.au/products/fallout-out-of-the-vault-hail-caesar-commander-deck": {
+   "first_seen": "2026-10-29",
+   "last_seen": "2026-10-29",
+   "price": 90.0,
+   "reported": "2026-10-29",
+   "store": "Elementalarcade",
+   "title": "Fallout: Out of the Vault - Hail, Caesar Commander Deck"
+  },
+  "outlier|Elementalarcade|elementalarcade.com.au/products/fallout-out-of-the-vault-scrappy-survivors-commander-deck": {
+   "first_seen": "2026-10-29",
+   "last_seen": "2026-10-29",
+   "price": 90.0,
+   "reported": "2026-10-29",
+   "store": "Elementalarcade",
+   "title": "Fallout: Out of the Vault - Scrappy Survivors Commander Deck"
+  },
   "outlier|Fromthedeepgames|fromthedeepgames.com.au/products/magic-star-trek-scene-box-preorder": {
    "first_seen": "2026-10-26",
    "last_seen": "2026-10-29",
@@ -115,7 +139,7 @@
   },
   "outlier|Gameology|www.gameology.com.au/products/magic-edge-of-eternities-commander-decks-pair": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-28",
+   "last_seen": "2026-10-29",
    "price": 119.95,
    "reported": "2026-10-27",
    "store": "Gameology",
@@ -289,6 +313,14 @@
    "store": "Good Games",
    "title": "Magic: The Gathering Tarkir: Dragonstorm Commander Deck"
   },
+  "outlier|Guf|guf.com.au/products/march-of-the-machine-the-aftermath-collector-booster-box": {
+   "first_seen": "2026-10-29",
+   "last_seen": "2026-10-29",
+   "price": 306.6,
+   "reported": "2026-10-29",
+   "store": "Guf",
+   "title": "March of the Machine: The Aftermath - Collector Booster Box"
+  },
   "outlier|Gumnut|www.gumnut.com.au/products/magic-the-gathering-assassins-creed-beyond-booster": {
    "first_seen": "2026-10-28",
    "last_seen": "2026-10-29",
@@ -337,6 +369,14 @@
    "store": "Gumnut",
    "title": "Magic: The Gathering - Marvel's Spider-man - Scene Box"
   },
+  "outlier|Gumnut|www.gumnut.com.au/products/magic-the-gathering-murders-at-karlov-manor-play-booster": {
+   "first_seen": "2026-10-29",
+   "last_seen": "2026-10-29",
+   "price": 7.5,
+   "reported": "2026-10-29",
+   "store": "Gumnut",
+   "title": "Magic: The Gathering - Murders at Karlov Manor - Play Booster"
+  },
   "outlier|Gumnut|www.gumnut.com.au/products/magic-the-gathering-the-lord-of-the-rings-tales-of-middle-earth-commander-deck-assorted": {
    "first_seen": "2026-10-26",
    "last_seen": "2026-10-27",
@@ -353,9 +393,49 @@
    "store": "Hobbyco",
    "title": "Magic the Gathering Avatar the Last Airbender Jumpstart Boosters 1pc"
   },
+  "outlier|Inngames|inngames.com.au/products/march-of-the-machine-jumpstart-booster-pack": {
+   "first_seen": "2026-10-29",
+   "last_seen": "2026-10-29",
+   "price": 9.5,
+   "reported": "2026-10-29",
+   "store": "Inngames",
+   "title": "March of the Machine - Jumpstart Booster Pack"
+  },
+  "outlier|Inngames|inngames.com.au/products/marvel-super-heroes-prerelease-pack": {
+   "first_seen": "2026-10-29",
+   "last_seen": "2026-10-29",
+   "price": 39.95,
+   "reported": "2026-10-29",
+   "store": "Inngames",
+   "title": "Marvel Super Heroes - Prerelease Pack"
+  },
+  "outlier|Inngames|inngames.com.au/products/secrets-of-strixhaven-codex-bundle": {
+   "first_seen": "2026-10-29",
+   "last_seen": "2026-10-29",
+   "price": 179.95,
+   "reported": "2026-10-29",
+   "store": "Inngames",
+   "title": "Secrets of Strixhaven - Codex Bundle"
+  },
+  "outlier|Inngames|inngames.com.au/products/secrets-of-strixhaven-commander-deck-silverquill-influence": {
+   "first_seen": "2026-10-29",
+   "last_seen": "2026-10-29",
+   "price": 69.95,
+   "reported": "2026-10-29",
+   "store": "Inngames",
+   "title": "Secrets of Strixhaven Commander Deck - Silverquill Influence"
+  },
+  "outlier|Inngames|inngames.com.au/products/secrets-of-strixhaven-commander-deck-witherbloom-pestilence": {
+   "first_seen": "2026-10-29",
+   "last_seen": "2026-10-29",
+   "price": 69.95,
+   "reported": "2026-10-29",
+   "store": "Inngames",
+   "title": "Secrets of Strixhaven Commander Deck - Witherbloom Pestilence"
+  },
   "outlier|JToys|www.jtoys.com.au/product/magic-the-gathering-avatar-the-last-airbender-bundle": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-28",
+   "last_seen": "2026-10-29",
    "price": 79.99,
    "reported": "2026-10-27",
    "store": "JToys",
@@ -363,7 +443,7 @@
   },
   "outlier|JToys|www.jtoys.com.au/product/magic-the-gathering-avatar-the-last-airbender-play-booster-box": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-28",
+   "last_seen": "2026-10-29",
    "price": 199.99,
    "reported": "2026-10-27",
    "store": "JToys",
@@ -387,11 +467,27 @@
   },
   "outlier|JToys|www.jtoys.com.au/product/magic-the-gathering-the-hobbit-play-booster-box": {
    "first_seen": "2026-10-28",
-   "last_seen": "2026-10-28",
+   "last_seen": "2026-10-29",
    "price": 199.99,
    "reported": "2026-10-28",
    "store": "JToys",
    "title": "Magic the Gathering The Hobbit Play Booster Box"
+  },
+  "outlier|Manamarket|manamarket.com.au/products/edge-of-eternities-commander-deck-counter-intelligence": {
+   "first_seen": "2026-10-29",
+   "last_seen": "2026-10-29",
+   "price": 55.0,
+   "reported": "2026-10-29",
+   "store": "Manamarket",
+   "title": "Edge of Eternities Commander Deck Counter Intelligence"
+  },
+  "outlier|Manamarket|manamarket.com.au/products/edge-of-eternities-commander-deck-world-shaper": {
+   "first_seen": "2026-10-29",
+   "last_seen": "2026-10-29",
+   "price": 55.0,
+   "reported": "2026-10-29",
+   "store": "Manamarket",
+   "title": "Edge of Eternities Commander Deck World Shaper"
   },
   "outlier|Manamarket|manamarket.com.au/products/magic-the-gathering-spiderman-commander-deck-preorder": {
    "first_seen": "2026-10-27",
@@ -400,6 +496,14 @@
    "reported": "2026-10-27",
    "store": "Manamarket",
    "title": "Magic: The Gathering: Spiderman Scene Box"
+  },
+  "outlier|Manamarket|manamarket.com.au/products/marvel-super-heroes-commander-deck-case": {
+   "first_seen": "2026-10-29",
+   "last_seen": "2026-10-29",
+   "price": 90.0,
+   "reported": "2026-10-29",
+   "store": "Manamarket",
+   "title": "Marvel Super Heroes Commander Deck"
   },
   "outlier|Mint Collectables|mintcollectables.com.au/products/magic-the-gathering-aetherdrift-commander-deck": {
    "first_seen": "2026-10-27",
@@ -457,6 +561,14 @@
    "store": "Playmantis",
    "title": "Magic: The Gathering - Secrets of Strixhaven Silverquill Influence Commander Deck"
   },
+  "outlier|Ronin Games|roningames.com.au/products/foundations-starter-collection-pre-order-15-nov": {
+   "first_seen": "2026-10-29",
+   "last_seen": "2026-10-29",
+   "price": 95.0,
+   "reported": "2026-10-29",
+   "store": "Ronin Games",
+   "title": "Foundations - Starter Collection"
+  },
   "outlier|Shuffled|shuffled.com.au/products/mtg-x-the-hobbit-scene-box-pair": {
    "first_seen": "2026-10-27",
    "last_seen": "2026-10-29",
@@ -496,6 +608,14 @@
    "reported": "2026-10-27",
    "store": "Spellroo Gaming",
    "title": "Magic: The Gathering: Lord of The Rings - Tales of Middle-Earth Jumpstart Booster Pack - English"
+  },
+  "outlier|Tabernacle Games|tcg.tabernaclegames.com.au/products/copy-of-dominaria-united-draft-booster-pack": {
+   "first_seen": "2026-10-29",
+   "last_seen": "2026-10-29",
+   "price": 10.0,
+   "reported": "2026-10-29",
+   "store": "Tabernacle Games",
+   "title": "Dominaria United Set Booster Pack"
   },
   "outlier|Tabernacle Games|tcg.tabernaclegames.com.au/products/magic-the-gathering-aetherdrift-prerelease-pack": {
    "first_seen": "2026-10-26",
