@@ -3,7 +3,7 @@
  "deals": {
   "outlier|AWNO Games|www.awnogames.com.au/products/magic-the-gathering-hobbit-prerelease-pack": {
    "first_seen": "2026-10-26",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 54.0,
    "reported": "2026-10-26",
    "store": "AWNO Games",
@@ -27,7 +27,7 @@
   },
   "outlier|AWNO Games|www.awnogames.com.au/products/magic-the-gathering-the-hobbit-scene-box-pair": {
    "first_seen": "2026-10-26",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 59.0,
    "reported": "2026-10-26",
    "store": "AWNO Games",
@@ -43,7 +43,7 @@
   },
   "outlier|Behold Games|beholdgames.com.au/products/fantastic-four-collectors-edition-mtg-marvel-commander-deck": {
    "first_seen": "2026-10-26",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 189.95,
    "reported": "2026-10-26",
    "store": "Behold Games",
@@ -51,7 +51,7 @@
   },
   "outlier|Behold Games|beholdgames.com.au/products/living-energy-magic-the-gathering-aetherdrift-commander-deck": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 49.99,
    "reported": "2026-10-27",
    "store": "Behold Games",
@@ -59,7 +59,7 @@
   },
   "outlier|Behold Games|beholdgames.com.au/products/mtg-marvel-bundle": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 69.95,
    "reported": "2026-10-27",
    "store": "Behold Games",
@@ -67,7 +67,7 @@
   },
   "outlier|Behold Games|beholdgames.com.au/products/wakanda-forever-collectors-edition-mtg-marvel-commander-deck": {
    "first_seen": "2026-10-26",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 189.95,
    "reported": "2026-10-26",
    "store": "Behold Games",
@@ -83,7 +83,7 @@
   },
   "outlier|Combat Company|thecombatcompany.com/products/magic-the-gathering-avatar-the-last-airbender-play-booster": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 8.99,
    "reported": "2026-10-27",
    "store": "Combat Company",
@@ -91,7 +91,7 @@
   },
   "outlier|Combat Company|thecombatcompany.com/products/magic-the-gathering-the-hobbit-crack-the-plates-scene-box": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 59.99,
    "reported": "2026-10-27",
    "store": "Combat Company",
@@ -99,7 +99,7 @@
   },
   "outlier|Fromthedeepgames|fromthedeepgames.com.au/products/magic-star-trek-scene-box-preorder": {
    "first_seen": "2026-10-26",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 70.0,
    "reported": "2026-10-26",
    "store": "Fromthedeepgames",
@@ -107,7 +107,7 @@
   },
   "outlier|Gameology|www.gameology.com.au/products/magic-avatar-the-last-airbender-jumpstart-booster-box": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 169.95,
    "reported": "2026-10-27",
    "store": "Gameology",
@@ -115,7 +115,7 @@
   },
   "outlier|Gameology|www.gameology.com.au/products/magic-edge-of-eternities-commander-decks-pair": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 119.95,
    "reported": "2026-10-27",
    "store": "Gameology",
@@ -123,7 +123,7 @@
   },
   "outlier|Gameology|www.gameology.com.au/products/magic-final-fantasy-commander-decks-set-of-4": {
    "first_seen": "2026-10-26",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 319.95,
    "reported": "2026-10-26",
    "store": "Gameology",
@@ -139,7 +139,7 @@
   },
   "outlier|Gameology|www.gameology.com.au/products/magic-marvel-super-heroes-prerelease-pack": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 44.95,
    "reported": "2026-10-27",
    "store": "Gameology",
@@ -147,7 +147,7 @@
   },
   "outlier|Gameology|www.gameology.com.au/products/magic-strixhaven-school-of-mages-japanese-collector-booster-box-mtg": {
    "first_seen": "2026-10-26",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 689.95,
    "reported": "2026-10-26",
    "store": "Gameology",
@@ -155,7 +155,7 @@
   },
   "outlier|Gameology|www.gameology.com.au/products/magic-the-lord-of-the-rings-tales-of-middle-earth-jumpstart-single-booster": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 10.95,
    "reported": "2026-10-27",
    "store": "Gameology",
@@ -169,9 +169,17 @@
    "store": "Games Empire",
    "title": "Magic the Gathering Fallout Commander Deck Scrappy Survivors"
   },
+  "outlier|Games Empire|gamesempire.com.au/products/magic-the-gathering-final-fantasy-bundle": {
+   "first_seen": "2026-10-28",
+   "last_seen": "2026-10-28",
+   "price": 149.99,
+   "reported": "2026-10-28",
+   "store": "Games Empire",
+   "title": "Magic the Gathering Final Fantasy Bundle"
+  },
   "outlier|Games Empire|gamesempire.com.au/products/magic-the-gathering-modern-horizons-3-bundle": {
    "first_seen": "2026-10-26",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 199.99,
    "reported": "2026-10-26",
    "store": "Games Empire",
@@ -203,7 +211,7 @@
   },
   "outlier|Gamesportal|gamesportal.com.au/products/magic-final-fantasy-starter-kit": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 30.0,
    "reported": "2026-10-27",
    "store": "Gamesportal",
@@ -227,7 +235,7 @@
   },
   "outlier|Gap Games|www.gapgames.com.au/products/magic-edge-of-eternities-commander-deck-counter-intelligence": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 65.0,
    "reported": "2026-10-27",
    "store": "Gap Games",
@@ -251,7 +259,7 @@
   },
   "outlier|Goldfields|goldfieldsgames.com.au/products/magic-mtg-spider-man-bundle": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 60.0,
    "reported": "2026-10-27",
    "store": "Goldfields",
@@ -259,7 +267,7 @@
   },
   "outlier|Goldfields|goldfieldsgames.com.au/products/magic-mtg-spider-man-play-booster": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 6.25,
    "reported": "2026-10-27",
    "store": "Goldfields",
@@ -281,9 +289,17 @@
    "store": "Good Games",
    "title": "Magic: The Gathering Tarkir: Dragonstorm Commander Deck"
   },
+  "outlier|Gumnut|www.gumnut.com.au/products/magic-the-gathering-assassins-creed-beyond-booster": {
+   "first_seen": "2026-10-28",
+   "last_seen": "2026-10-28",
+   "price": 9.0,
+   "reported": "2026-10-28",
+   "store": "Gumnut",
+   "title": "Magic: The Gathering - Assassin's Creed - Beyond Booster"
+  },
   "outlier|Gumnut|www.gumnut.com.au/products/magic-the-gathering-marvel-super-heroes-collector-booster": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 55.0,
    "reported": "2026-10-27",
    "store": "Gumnut",
@@ -291,7 +307,7 @@
   },
   "outlier|Gumnut|www.gumnut.com.au/products/magic-the-gathering-marvel-super-heroes-jumpstart-booster": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 9.0,
    "reported": "2026-10-27",
    "store": "Gumnut",
@@ -299,7 +315,7 @@
   },
   "outlier|Gumnut|www.gumnut.com.au/products/magic-the-gathering-marvel-super-heroes-play-booster": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 9.0,
    "reported": "2026-10-27",
    "store": "Gumnut",
@@ -307,7 +323,7 @@
   },
   "outlier|Gumnut|www.gumnut.com.au/products/magic-the-gathering-marvels-spider-man-collector-booster": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 45.0,
    "reported": "2026-10-27",
    "store": "Gumnut",
@@ -315,7 +331,7 @@
   },
   "outlier|Gumnut|www.gumnut.com.au/products/magic-the-gathering-marvels-spider-man-scene-box": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 45.0,
    "reported": "2026-10-27",
    "store": "Gumnut",
@@ -331,7 +347,7 @@
   },
   "outlier|JToys|www.jtoys.com.au/product/magic-the-gathering-avatar-the-last-airbender-bundle": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 79.99,
    "reported": "2026-10-27",
    "store": "JToys",
@@ -339,7 +355,7 @@
   },
   "outlier|JToys|www.jtoys.com.au/product/magic-the-gathering-avatar-the-last-airbender-play-booster-box": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 199.99,
    "reported": "2026-10-27",
    "store": "JToys",
@@ -347,7 +363,7 @@
   },
   "outlier|JToys|www.jtoys.com.au/product/magic-the-gathering-march-of-the-machine-set-booster-box": {
    "first_seen": "2026-10-26",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 349.99,
    "reported": "2026-10-26",
    "store": "JToys",
@@ -361,6 +377,14 @@
    "store": "JToys",
    "title": "Magic the Gathering Marvel Super Heroes Prerelease Pack"
   },
+  "outlier|JToys|www.jtoys.com.au/product/magic-the-gathering-the-hobbit-play-booster-box": {
+   "first_seen": "2026-10-28",
+   "last_seen": "2026-10-28",
+   "price": 199.99,
+   "reported": "2026-10-28",
+   "store": "JToys",
+   "title": "Magic the Gathering The Hobbit Play Booster Box"
+  },
   "outlier|Manamarket|manamarket.com.au/products/magic-the-gathering-spiderman-commander-deck-preorder": {
    "first_seen": "2026-10-27",
    "last_seen": "2026-10-27",
@@ -371,7 +395,7 @@
   },
   "outlier|Mint Collectables|mintcollectables.com.au/products/magic-the-gathering-aetherdrift-commander-deck": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 50.0,
    "reported": "2026-10-27",
    "store": "Mint Collectables",
@@ -379,7 +403,7 @@
   },
   "outlier|Mint Collectables|mintcollectables.com.au/products/magic-the-gathering-final-fantasy-commander-deck": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 75.0,
    "reported": "2026-10-27",
    "store": "Mint Collectables",
@@ -395,7 +419,7 @@
   },
   "outlier|Mint Collectables|mintcollectables.com.au/products/magic-the-gathering-marvel-super-heroes-scene-box": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 45.0,
    "reported": "2026-10-27",
    "store": "Mint Collectables",
@@ -419,7 +443,7 @@
   },
   "outlier|Playmantis|playmantis.com.au/products/magic-the-gathering-secrets-of-strixhaven-silverquill-influence-commander-deck": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 90.0,
    "reported": "2026-10-27",
    "store": "Playmantis",
@@ -427,7 +451,7 @@
   },
   "outlier|Shuffled|shuffled.com.au/products/mtg-x-the-hobbit-scene-box-pair": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 120.0,
    "reported": "2026-10-27",
    "store": "Shuffled",
@@ -435,7 +459,7 @@
   },
   "outlier|Spellroo Gaming|spellroogaming.com.au/products/magic-the-gathering-fallout-commander-deck-scrappy-survivors-english": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 129.0,
    "reported": "2026-10-27",
    "store": "Spellroo Gaming",
@@ -443,7 +467,7 @@
   },
   "outlier|Spellroo Gaming|spellroogaming.com.au/products/magic-the-gathering-final-fantasy-limit-break-commander-deck-english": {
    "first_seen": "2026-10-26",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 119.0,
    "reported": "2026-10-26",
    "store": "Spellroo Gaming",
@@ -451,7 +475,7 @@
   },
   "outlier|Spellroo Gaming|spellroogaming.com.au/products/magic-the-gathering-final-fantasy-scions-spellcraft-commander-deck-english": {
    "first_seen": "2026-10-26",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 99.0,
    "reported": "2026-10-26",
    "store": "Spellroo Gaming",
@@ -467,7 +491,7 @@
   },
   "outlier|Tabernacle Games|tcg.tabernaclegames.com.au/products/magic-the-gathering-aetherdrift-prerelease-pack": {
    "first_seen": "2026-10-26",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 30.0,
    "reported": "2026-10-26",
    "store": "Tabernacle Games",
@@ -491,7 +515,7 @@
   },
   "outlier|Tabernacle Games|tcg.tabernaclegames.com.au/products/magic-the-gathering-marvels-spider-man-prerelease-pack": {
    "first_seen": "2026-10-26",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 35.0,
    "reported": "2026-10-26",
    "store": "Tabernacle Games",
@@ -507,7 +531,7 @@
   },
   "unverified|Behold Games|beholdgames.com.au/products/collectors_edition_revival_trance_magic_the_gathering_final_fantasy_commander_deck": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-10-27",
+   "last_seen": "2026-10-28",
    "price": 148.95,
    "reported": "2026-10-27",
    "store": "Behold Games",
