@@ -131,7 +131,7 @@
   },
   "outlier|Gameology|www.gameology.com.au/products/magic-marvel-darkhold-destiny-draft-night": {
    "first_seen": "2026-10-26",
-   "last_seen": "2026-10-26",
+   "last_seen": "2026-10-28",
    "price": 161.45,
    "reported": "2026-10-26",
    "store": "Gameology",
@@ -344,6 +344,14 @@
    "reported": "2026-10-26",
    "store": "Gumnut",
    "title": "Magic: The Gathering - The Lord of the Rings - Tales of Middle-Earth - Commander Deck (Assorted)"
+  },
+  "outlier|Hobbyco|www.hobbyco.com.au/products/magic-the-gathering-avatar-the-last-airbender-jumpstart-boosters-1pc-1": {
+   "first_seen": "2026-10-28",
+   "last_seen": "2026-10-28",
+   "price": 10.0,
+   "reported": "2026-10-28",
+   "store": "Hobbyco",
+   "title": "Magic the Gathering Avatar the Last Airbender Jumpstart Boosters 1pc"
   },
   "outlier|JToys|www.jtoys.com.au/product/magic-the-gathering-avatar-the-last-airbender-bundle": {
    "first_seen": "2026-10-27",
