@@ -1,9 +1,11 @@
 # MTG deal bot (sealed product).
 #
 # Scheduled runs are DRY RUNS: they build the report, attach it to the run, publish it to GitHub
-# Pages and send no email. They highlight deals that are new since the last report. The list of
-# reported deals is kept in seen-sealed.json, and the web pages are kept in the docs folder (built by
-# build_site.py). This workflow commits both back to the repository after each scheduled run.
+# Pages and send no email. They tag deals by how long ago they were first found (NEW, RECENT, PRICE DROP).
+# The list of reported deals is kept in seen-sealed.json, and the web pages are kept in the docs folder
+# (built by build_site.py). This workflow commits both back to the repository after each scheduled run.
+#
+# The Re-scan button on the published page starts this workflow with "dry run" and "only new" ticked.
 #
 # Manual runs show every deal and leave the history and the web page alone, unless you tick
 # "only new".
@@ -27,7 +29,7 @@ on:
         type: boolean
         default: true
       only_new:
-        description: "Highlight new deals, update the history and publish the page (scheduled runs always do this)"
+        description: "Tag new deals, update the history and publish the page (scheduled runs always do this)"
         type: boolean
         default: false
 
@@ -91,6 +93,8 @@ jobs:
 
       # Builds the styled web pages with build_site.py, then saves them and the list of reported deals.
       # It runs only after the bot finished without an error.
+      # The RESCAN_ settings switch on the Re-scan button on the page. RESCAN_INPUTS must match what
+      # makes this step run (dry run ticked and only new ticked).
       - name: Publish report and save history
         if: ${{ github.event_name == 'schedule' || inputs.only_new }}
         env:
@@ -98,6 +102,11 @@ jobs:
           SITE_KICKER: Sealed product scan
           SITE_CURRENT: Sealed
           SITE_NAV: "Sealed|https://alex-speed.github.io/mtg-deal-bot/;Singles|https://alex-speed.github.io/mtg-singles-daily/"
+          RESCAN_REPO: ${{ github.repository }}
+          RESCAN_WORKFLOW: mtg-deals.yml
+          RESCAN_REF: ${{ github.ref_name }}
+          RESCAN_INPUTS: "dry_run=true,only_new=true"
+          RESCAN_EXPECT: "180"
         run: |
           set -euo pipefail
           python build_site.py
