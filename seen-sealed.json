@@ -123,7 +123,7 @@
   },
   "outlier|Fromthedeepgames|fromthedeepgames.com.au/products/magic-star-trek-scene-box-preorder": {
    "first_seen": "2026-10-26",
-   "last_seen": "2026-10-29",
+   "last_seen": "2026-10-30",
    "price": 70.0,
    "reported": "2026-10-26",
    "store": "Fromthedeepgames",
@@ -312,6 +312,14 @@
    "reported": "2026-10-27",
    "store": "Good Games",
    "title": "Magic: The Gathering Tarkir: Dragonstorm Commander Deck"
+  },
+  "outlier|Guf|guf.com.au/products/march-of-the-machine-the-aftermath-bundle-epilogue-edition": {
+   "first_seen": "2026-10-30",
+   "last_seen": "2026-10-30",
+   "price": 64.95,
+   "reported": "2026-10-30",
+   "store": "Guf",
+   "title": "March of the Machine the Aftermath Bundle Epilogue Edition"
   },
   "outlier|Guf|guf.com.au/products/march-of-the-machine-the-aftermath-collector-booster-box": {
    "first_seen": "2026-10-29",
