@@ -95,6 +95,7 @@ Inngames | https://inngames.com.au | mtg-decks
 Gamesportal | https://gamesportal.com.au | magic-msh-set-singles-copy | off
 Gamesportal | https://gamesportal.com.au | sealed-magic-products
 Gamesportal | https://gamesportal.com.au | magic-banlist-commander | off
+Warhaus | https://warhaus.com.au | magic-the-gathering
 
 # ---- Added in this update (collection names seen on live pages) ----
 TCGroupAU | https://www.tcgroupau.com.au | magic-the-gathering, magic-the-gathering-booster-boxes
