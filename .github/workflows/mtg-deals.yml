@@ -110,6 +110,7 @@ jobs:
         run: |
           set -euo pipefail
           python build_site.py
+          python add_hide_button.py
           [ -d docs ] && git add docs || true
           [ -f seen-sealed.json ] && git add seen-sealed.json || true
           if git diff --cached --quiet; then
