@@ -1,29 +1,65 @@
-/* Hide as mislabelled: the buttons, the bar above the report and the hidden state.
-   It uses the page theme's colours when they are defined, and sensible ones when they are not. */
-.hide-row{margin-top:.6rem}
-.hide-btn,.hb-btn{display:inline-flex;align-items:center;justify-content:center;min-height:32px;padding:.25rem .9rem;
-  border:1px solid var(--edge,rgba(160,150,255,.35));border-radius:999px;background:transparent;color:var(--muted,#a9b2d5);
-  font:inherit;font-size:.78rem;letter-spacing:.03em;line-height:1.2;cursor:pointer;
-  transition:color .15s,border-color .15s,background .15s}
-.hide-btn:hover,.hb-btn:hover{color:#fff;border-color:var(--gold,#f4c24f);background:rgba(244,194,79,.12)}
-.hide-btn:focus-visible,.hb-btn:focus-visible{outline:2px solid var(--gold,#f4c24f);outline-offset:3px}
-.hb-btn{min-height:36px;font-size:.84rem;color:var(--text,#e9edfc)}
-.hb-btn.primary{border-color:rgba(244,194,79,.6);background:rgba(244,194,79,.12)}
-.hb-btn[hidden],.hidebar[hidden],.hide-empty[hidden]{display:none}
+/* hide button column and bar (add_hide_button.py) */
+.hide-off{display:none !important}
+.hide-sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
-.is-hidden,.hide-whole{display:none !important}
-html.show-hidden tr.is-hidden{display:table-row !important}
-html.show-hidden li.is-hidden{display:block !important}
-html.show-hidden .is-hidden{opacity:.75}
-html.show-hidden tr.is-hidden > td:first-child a:first-of-type,
-html.show-hidden li.is-hidden > a:first-of-type{text-decoration:line-through}
+table th.hide-th{position:relative;width:1%;padding:0;border-left:0}   /* relative, so the hidden label stays inside the scrolling panel */
+table td.hide-cell{width:1%;padding:calc(.72rem - 2px) .8rem .2rem .2rem;text-align:right;vertical-align:top;white-space:nowrap}
 
-.hidebar{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem .8rem;margin:0 0 1.4rem;padding:.75rem 1.1rem;
-  border:1px solid var(--edge,rgba(160,150,255,.35));border-left:3px solid var(--violet,#a58bff);border-radius:var(--r,14px);
-  background:var(--panel,rgba(14,20,58,.92));color:var(--text,#e9edfc);font-size:.9rem}
-.hb-text{margin-right:auto;min-width:12ch}
-.hide-empty{margin:.4rem 0 1.3rem;padding:.8rem 1rem;border:1px dashed var(--edge,rgba(160,150,255,.35));
-  border-radius:12px;color:var(--muted,#a9b2d5);font-size:.9rem}
+.hide-btn{position:relative;display:inline-grid;place-items:center;width:28px;height:28px;margin:0;padding:0;
+  border:1px solid rgba(160,150,255,.28);border-radius:50%;background:transparent;color:#9aa4cf;cursor:pointer;
+  font:inherit;line-height:1;transition:color .15s,border-color .15s,background .15s}
+.hide-btn svg{display:block;pointer-events:none}
+.hide-btn:hover{color:#fff;border-color:var(--gold,#f4c24f);background:rgba(244,194,79,.12)}
+.hide-btn:focus-visible{outline:2px solid var(--gold,#f4c24f);outline-offset:2px}
+.hide-btn:active{background:rgba(244,194,79,.22)}
 
-@media (pointer:coarse){.hide-btn,.hb-btn{min-height:44px}}
-@media print{.hide-row,.hidebar,.hide-empty{display:none !important}}
+/* the tooltip sits to the left of the button so the scrolling table panel never clips it */
+.hide-btn::after{content:attr(data-tip);position:absolute;right:calc(100% + 8px);top:50%;transform:translateY(-50%);
+  padding:.32rem .6rem;border:1px solid rgba(160,150,255,.35);border-radius:6px;background:#0b1030;color:#e9edfc;
+  font:600 12px/1.2 var(--sans,"Segoe UI",system-ui,sans-serif);letter-spacing:.02em;white-space:nowrap;pointer-events:none;
+  box-shadow:0 8px 22px rgba(0,0,0,.45);opacity:0;visibility:hidden;z-index:6;
+  transition:opacity .1s ease,visibility 0s linear .1s}
+.hide-btn:focus-visible::after{opacity:1;visibility:visible;transition:opacity .1s ease,visibility 0s}
+@media (hover:hover){
+  .hide-btn:hover::after{opacity:1;visibility:visible;transition:opacity .12s ease .3s,visibility 0s linear .3s}
+}
+
+/* half price list: the button sits at the right of the card */
+li.has-hide{padding-right:3.2rem}
+li.has-hide > .hide-btn{position:absolute;right:.8rem;top:.62rem}
+
+/* a listing that is hidden but shown again for review */
+tr.is-hidden > td:not(.hide-cell){opacity:.55}
+tr.is-hidden a,li.is-hidden a{text-decoration:line-through}
+li.is-hidden{border-style:dashed}
+li.is-hidden a{opacity:.7}
+
+/* the bar that appears once something is hidden */
+.hide-bar{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem 1rem;margin:0 0 1.2rem;padding:.55rem .95rem;
+  border:1px solid var(--edge,rgba(160,150,255,.24));border-radius:12px;background:rgba(14,20,58,.7);
+  color:var(--muted,#a9b2d5);font-size:.86rem}
+.hide-bar .hide-msg{margin-right:auto}
+.hide-link{appearance:none;-webkit-appearance:none;margin:0;padding:.2rem .1rem;border:0;border-bottom:1px solid rgba(185,198,255,.3);
+  background:none;color:var(--link,#b9c6ff);font:inherit;cursor:pointer}
+.hide-link:hover{color:#fff;border-bottom-color:var(--gold,#f4c24f)}
+.hide-link:focus-visible{outline:2px solid var(--gold,#f4c24f);outline-offset:3px;border-radius:3px}
+.hide-empty{margin:.4rem 0 1.3rem;padding:.8rem 1rem;border:1px dashed rgba(160,150,255,.3);border-radius:12px;color:var(--muted,#a9b2d5)}
+.hide-bar[hidden],.hide-empty[hidden],.hide-link[hidden]{display:none !important}
+
+@media (pointer:coarse){
+  .hide-btn{width:36px;height:36px}
+  .hide-btn svg{width:17px;height:17px}
+  table td.hide-cell{padding-top:.25rem}
+  li.has-hide{padding-right:3.6rem}
+  li.has-hide > .hide-btn{top:.4rem}
+  .hide-link{padding:.5rem .3rem}
+}
+@media (prefers-reduced-motion:reduce){
+  .hide-btn,.hide-btn::after{transition:none}
+}
+@media (max-width:720px){
+  table td.hide-cell{padding-right:.6rem}
+}
+@media print{
+  .hide-btn,.hide-cell,.hide-th,.hide-bar{display:none !important}
+}
