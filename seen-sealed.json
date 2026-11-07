@@ -161,6 +161,14 @@
    "store": "Games Empire",
    "title": "Magic the Gathering Final Fantasy Bundle"
   },
+  "outlier|Games Empire|gamesempire.com.au/products/magic-the-gathering-foundations-prerelease-pack": {
+   "first_seen": "2026-11-07",
+   "last_seen": "2026-11-07",
+   "price": 89.99,
+   "reported": "2026-11-07",
+   "store": "Games Empire",
+   "title": "Magic the Gathering Foundations Prerelease Pack"
+  },
   "outlier|Games Empire|gamesempire.com.au/products/magic-the-gathering-modern-horizons-3-bundle": {
    "first_seen": "2026-10-26",
    "last_seen": "2026-11-07",
@@ -624,6 +632,14 @@
    "reported": "2026-11-05",
    "store": "Warhaus",
    "title": "Magic the Gathering Marvel Super Heroes Jumpstart Boosters (24 Boosters Per Display)"
+  },
+  "outlier|Warhaus|warhaus.com.au/products/magic-the-gathering-secrets-of-strixhaven-commander-decks-5-decks-per-display": {
+   "first_seen": "2026-11-07",
+   "last_seen": "2026-11-07",
+   "price": 299.97,
+   "reported": "2026-11-07",
+   "store": "Warhaus",
+   "title": "Magic the Gathering Secrets of Strixhaven Commander Decks (5 Decks Per Display)"
   },
   "outlier|Warhaus|warhaus.com.au/products/magic-the-gathering-secrets-of-strixhaven-draft-night": {
    "first_seen": "2026-11-03",
