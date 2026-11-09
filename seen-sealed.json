@@ -161,6 +161,14 @@
    "store": "Good Games",
    "title": "Magic: The Gathering Avatar: The Last Airbender Bundle"
   },
+  "outlier|Good Games|www.goodgames.com.au/products/magic-the-gathering-final-fantasy-play-booster-box": {
+   "first_seen": "2026-11-09",
+   "last_seen": "2026-11-09",
+   "price": 269.0,
+   "reported": "2026-11-09",
+   "store": "Good Games",
+   "title": "Magic: The Gathering Final Fantasy Play Booster Box"
+  },
   "outlier|Guf|guf.com.au/products/march-of-the-machine-the-aftermath-bundle-epilogue-edition": {
    "first_seen": "2026-10-30",
    "last_seen": "2026-11-09",
@@ -376,6 +384,62 @@
    "reported": "2026-10-31",
    "store": "Playmantis",
    "title": "Magic the Gathering - Star Trek Scene Box - Enterprise-Q (Pre-Order - 6/11)"
+  },
+  "outlier|Pokebox|www.pokebox.com.au/products/magic-marvel-super-heroes-scene-box-pair": {
+   "first_seen": "2026-11-09",
+   "last_seen": "2026-11-09",
+   "price": 64.99,
+   "reported": "2026-11-09",
+   "store": "Pokebox",
+   "title": "Magic Marvel Super Heroes - Scene Box (Pair)"
+  },
+  "outlier|Pokebox|www.pokebox.com.au/products/magic-the-gathering-marvel-super-heroes-commander-avengers-assemble-deck": {
+   "first_seen": "2026-11-09",
+   "last_seen": "2026-11-09",
+   "price": 79.99,
+   "reported": "2026-11-09",
+   "store": "Pokebox",
+   "title": "Magic The Gathering: Marvel Super Heroes Commander - Avengers Assemble Deck"
+  },
+  "outlier|Pokebox|www.pokebox.com.au/products/magic-the-gathering-marvel-super-heroes-commander-fantastic-four-deck": {
+   "first_seen": "2026-11-09",
+   "last_seen": "2026-11-09",
+   "price": 79.99,
+   "reported": "2026-11-09",
+   "store": "Pokebox",
+   "title": "Magic The Gathering: Marvel Super Heroes Commander - Fantastic Four Deck"
+  },
+  "outlier|Pokebox|www.pokebox.com.au/products/magic-the-gathering-marvel-super-heroes-commander-wakanda-forever-deck": {
+   "first_seen": "2026-11-09",
+   "last_seen": "2026-11-09",
+   "price": 79.99,
+   "reported": "2026-11-09",
+   "store": "Pokebox",
+   "title": "Magic The Gathering: Marvel Super Heroes Commander - Wakanda Forever Deck"
+  },
+  "outlier|Pokebox|www.pokebox.com.au/products/magic-the-gathering-marvel-super-heroes-prerelease-kit": {
+   "first_seen": "2026-11-09",
+   "last_seen": "2026-11-09",
+   "price": 34.99,
+   "reported": "2026-11-09",
+   "store": "Pokebox",
+   "title": "Magic The Gathering | Marvel Super Heroes - Prerelease Kit"
+  },
+  "outlier|Pokebox|www.pokebox.com.au/products/magic-the-gathering-marvel-super-heroes-scene-box-heroes-united": {
+   "first_seen": "2026-11-09",
+   "last_seen": "2026-11-09",
+   "price": 34.99,
+   "reported": "2026-11-09",
+   "store": "Pokebox",
+   "title": "Magic The Gathering: Marvel Super Heroes - Scene Box (Heroes United)"
+  },
+  "outlier|Pokebox|www.pokebox.com.au/products/magic-the-gathering-marvel-super-heroes-scene-box-villains-unleashed": {
+   "first_seen": "2026-11-09",
+   "last_seen": "2026-11-09",
+   "price": 34.99,
+   "reported": "2026-11-09",
+   "store": "Pokebox",
+   "title": "Magic The Gathering: Marvel Super Heroes - Scene Box (Villains Unleashed)"
   },
   "outlier|Ronin Games|roningames.com.au/products/foundations-starter-collection-pre-order-15-nov": {
    "first_seen": "2026-10-29",
