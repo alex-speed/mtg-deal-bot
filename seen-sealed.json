@@ -49,6 +49,14 @@
    "store": "AWNO Games",
    "title": "Magic the Gathering Edge of Eternities Play Booster"
   },
+  "outlier|AWNO Games|www.awnogames.com.au/products/magic-the-gathering-final-fantasy-play-booster": {
+   "first_seen": "2026-11-16",
+   "last_seen": "2026-11-16",
+   "price": 8.95,
+   "reported": "2026-11-16",
+   "store": "AWNO Games",
+   "title": "Magic the Gathering Final Fantasy Play Booster"
+  },
   "outlier|AWNO Games|www.awnogames.com.au/products/magic-the-gathering-foundations-jumpstart-booster": {
    "first_seen": "2026-11-15",
    "last_seen": "2026-11-16",
@@ -80,6 +88,22 @@
    "reported": "2026-11-15",
    "store": "AWNO Games",
    "title": "Magic the Gathering Lorwyn Eclipsed Play Booster"
+  },
+  "outlier|AWNO Games|www.awnogames.com.au/products/magic-the-gathering-reality-fracture-prerelease-pack": {
+   "first_seen": "2026-11-16",
+   "last_seen": "2026-11-16",
+   "price": 48.0,
+   "reported": "2026-11-16",
+   "store": "AWNO Games",
+   "title": "Magic the Gathering Reality Fracture Prerelease Pack"
+  },
+  "outlier|AWNO Games|www.awnogames.com.au/products/magic-the-gathering-secrets-of-strixhaven-play-booster": {
+   "first_seen": "2026-11-16",
+   "last_seen": "2026-11-16",
+   "price": 7.45,
+   "reported": "2026-11-16",
+   "store": "AWNO Games",
+   "title": "Magic the Gathering Secrets of Strixhaven Play Booster"
   },
   "outlier|AWNO Games|www.awnogames.com.au/products/magic-the-gathering-tarkir-dragonstorm-play-booster": {
    "first_seen": "2026-11-15",
@@ -379,7 +403,7 @@
   },
   "outlier|Manamarket|manamarket.com.au/products/avatar-the-last-airbender-bundle": {
    "first_seen": "2026-10-29",
-   "last_seen": "2026-11-10",
+   "last_seen": "2026-11-16",
    "price": 80.0,
    "reported": "2026-10-29",
    "store": "Manamarket",
