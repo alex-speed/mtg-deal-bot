@@ -443,6 +443,14 @@
    "store": "Manamarket",
    "title": "Marvel Super Heroes Commander Deck (Collector's Edition) 26/06"
   },
+  "outlier|Manamarket|manamarket.com.au/products/star-trek-commander-deck-we-are-the-borg": {
+   "first_seen": "2026-11-17",
+   "last_seen": "2026-11-17",
+   "price": 100.0,
+   "reported": "2026-11-17",
+   "store": "Manamarket",
+   "title": "Star Trek Commander Deck - We Are the Borg"
+  },
   "outlier|Manamarket|manamarket.com.au/products/star-trek-scene-box-divergent-timelines": {
    "first_seen": "2026-11-06",
    "last_seen": "2026-11-13",
@@ -605,7 +613,7 @@
   },
   "outlier|Tabernacle Games|tcg.tabernaclegames.com.au/products/magic-the-gathering-marvels-spider-man-prerelease-pack": {
    "first_seen": "2026-10-26",
-   "last_seen": "2026-11-14",
+   "last_seen": "2026-11-17",
    "price": 35.0,
    "reported": "2026-10-26",
    "store": "Tabernacle Games",
