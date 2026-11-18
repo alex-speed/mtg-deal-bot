@@ -258,10 +258,12 @@
    "title": "Nauctis: The Sunken Realm - Booster"
   },
   "outlier|Gap Games|www.gapgames.com.au/products/magic-final-fantasy-commander-deck": {
+   "drop_date": "2026-11-18",
+   "drop_from": 85.0,
    "first_seen": "2026-11-04",
    "last_seen": "2026-11-18",
-   "price": 85.0,
-   "reported": "2026-11-04",
+   "price": 80.0,
+   "reported": "2026-11-18",
    "store": "Gap Games",
    "title": "Magic Final Fantasy - Commander Deck"
   },
