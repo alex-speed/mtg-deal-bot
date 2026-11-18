@@ -91,7 +91,7 @@
   },
   "outlier|AWNO Games|www.awnogames.com.au/products/magic-the-gathering-reality-fracture-prerelease-pack": {
    "first_seen": "2026-11-16",
-   "last_seen": "2026-11-17",
+   "last_seen": "2026-11-18",
    "price": 48.0,
    "reported": "2026-11-16",
    "store": "AWNO Games",
@@ -248,6 +248,14 @@
    "reported": "2026-11-01",
    "store": "Games Empire",
    "title": "Magic the Gathering Murders at Karlov Manor Prerelease Pack"
+  },
+  "outlier|Gamesportal|gamesportal.com.au/products/nauctis-the-sunken-realm-booster": {
+   "first_seen": "2026-11-18",
+   "last_seen": "2026-11-18",
+   "price": 8.0,
+   "reported": "2026-11-18",
+   "store": "Gamesportal",
+   "title": "Nauctis: The Sunken Realm - Booster"
   },
   "outlier|Gap Games|www.gapgames.com.au/products/magic-final-fantasy-commander-deck": {
    "first_seen": "2026-11-04",
@@ -411,7 +419,7 @@
   },
   "outlier|Manamarket|manamarket.com.au/products/avatar-the-last-airbender-bundle": {
    "first_seen": "2026-10-29",
-   "last_seen": "2026-11-17",
+   "last_seen": "2026-11-18",
    "price": 80.0,
    "reported": "2026-10-29",
    "store": "Manamarket",
@@ -573,7 +581,7 @@
   },
   "outlier|Shuffled|shuffled.com.au/products/mtg-x-the-hobbit-scene-box-pair": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-11-17",
+   "last_seen": "2026-11-18",
    "price": 120.0,
    "reported": "2026-10-27",
    "store": "Shuffled",
