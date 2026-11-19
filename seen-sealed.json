@@ -91,7 +91,7 @@
   },
   "outlier|AWNO Games|www.awnogames.com.au/products/magic-the-gathering-reality-fracture-prerelease-pack": {
    "first_seen": "2026-11-16",
-   "last_seen": "2026-11-18",
+   "last_seen": "2026-11-19",
    "price": 48.0,
    "reported": "2026-11-16",
    "store": "AWNO Games",
@@ -420,12 +420,22 @@
    "title": "Magic the Gathering March of the Machine Set Booster Box"
   },
   "outlier|Manamarket|manamarket.com.au/products/avatar-the-last-airbender-bundle": {
+   "drop_date": "2026-11-19",
+   "drop_from": 80.0,
    "first_seen": "2026-10-29",
-   "last_seen": "2026-11-18",
-   "price": 80.0,
-   "reported": "2026-10-29",
+   "last_seen": "2026-11-19",
+   "price": 75.0,
+   "reported": "2026-11-19",
    "store": "Manamarket",
    "title": "Avatar: The Last Airbender - Bundle"
+  },
+  "outlier|Manamarket|manamarket.com.au/products/avatar-the-last-airbender-jumpstart-booster-display": {
+   "first_seen": "2026-11-19",
+   "last_seen": "2026-11-19",
+   "price": 155.0,
+   "reported": "2026-11-19",
+   "store": "Manamarket",
+   "title": "Avatar: The Last Airbender - Jumpstart Booster Display"
   },
   "outlier|Manamarket|manamarket.com.au/products/edge-of-eternities-commander-deck-counter-intelligence": {
    "drop_date": "2026-11-16",
@@ -445,6 +455,22 @@
    "store": "Manamarket",
    "title": "Edge of Eternities Commander Deck World Shaper"
   },
+  "outlier|Manamarket|manamarket.com.au/products/magic-the-gathering-spiderman-bundle-preorder": {
+   "first_seen": "2026-11-19",
+   "last_seen": "2026-11-19",
+   "price": 60.0,
+   "reported": "2026-11-19",
+   "store": "Manamarket",
+   "title": "Magic: The Gathering: Spiderman Bundle"
+  },
+  "outlier|Manamarket|manamarket.com.au/products/magic-the-gathering-spiderman-play-booster-box-preorder": {
+   "first_seen": "2026-11-19",
+   "last_seen": "2026-11-19",
+   "price": 175.0,
+   "reported": "2026-11-19",
+   "store": "Manamarket",
+   "title": "Magic: The Gathering: Spiderman Play Booster Box"
+  },
   "outlier|Manamarket|manamarket.com.au/products/marvel-super-heroes-commander-deck-case": {
    "first_seen": "2026-10-29",
    "last_seen": "2026-11-14",
@@ -460,6 +486,22 @@
    "reported": "2026-11-06",
    "store": "Manamarket",
    "title": "Marvel Super Heroes Commander Deck (Collector's Edition) 26/06"
+  },
+  "outlier|Manamarket|manamarket.com.au/products/marvel-super-heroes-gift-bundle": {
+   "first_seen": "2026-11-19",
+   "last_seen": "2026-11-19",
+   "price": 85.0,
+   "reported": "2026-11-19",
+   "store": "Manamarket",
+   "title": "Marvel Super Heroes - Gift Bundle"
+  },
+  "outlier|Manamarket|manamarket.com.au/products/marvel-super-heroes-play-booster-display": {
+   "first_seen": "2026-11-19",
+   "last_seen": "2026-11-19",
+   "price": 185.0,
+   "reported": "2026-11-19",
+   "store": "Manamarket",
+   "title": "Marvel Super Heroes - Play Booster Display Box"
   },
   "outlier|Manamarket|manamarket.com.au/products/star-trek-commander-deck-we-are-the-borg": {
    "first_seen": "2026-11-17",
@@ -484,6 +526,14 @@
    "reported": "2026-11-06",
    "store": "Manamarket",
    "title": "Star Trek Scene Box - Enterprise-Q"
+  },
+  "outlier|Manamarket|manamarket.com.au/products/the-hobbit-play-booster-display": {
+   "first_seen": "2026-11-19",
+   "last_seen": "2026-11-19",
+   "price": 185.0,
+   "reported": "2026-11-19",
+   "store": "Manamarket",
+   "title": "The Hobbit - Play Booster Box"
   },
   "outlier|Mint Collectables|mintcollectables.com.au/products/magic-the-gathering-aetherdrift-commander-deck": {
    "first_seen": "2026-10-27",
@@ -583,7 +633,7 @@
   },
   "outlier|Shuffled|shuffled.com.au/products/mtg-x-the-hobbit-scene-box-pair": {
    "first_seen": "2026-10-27",
-   "last_seen": "2026-11-18",
+   "last_seen": "2026-11-19",
    "price": 120.0,
    "reported": "2026-10-27",
    "store": "Shuffled",
