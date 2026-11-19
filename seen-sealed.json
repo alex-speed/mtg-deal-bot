@@ -161,6 +161,22 @@
    "store": "Cherry Collectables",
    "title": "MTG Box - Magic The Gathering Mystery Box"
   },
+  "outlier|Combat Company|thecombatcompany.com/products/magic-final-fantasy-commander-deck-limit-break": {
+   "first_seen": "2026-11-19",
+   "last_seen": "2026-11-19",
+   "price": 95.0,
+   "reported": "2026-11-19",
+   "store": "Combat Company",
+   "title": "Magic - Final Fantasy Commander Deck - Limit Break"
+  },
+  "outlier|Combat Company|thecombatcompany.com/products/magic-final-fantasy-starter-kit-display-pre-order-13-jun": {
+   "first_seen": "2026-11-19",
+   "last_seen": "2026-11-19",
+   "price": 240.0,
+   "reported": "2026-11-19",
+   "store": "Combat Company",
+   "title": "Magic Final Fantasy - Play Booster Display"
+  },
   "outlier|Combat Company|thecombatcompany.com/products/magic-foundations-starter-commander-deck-keen-engineering": {
    "first_seen": "2026-11-16",
    "last_seen": "2026-11-19",
@@ -176,6 +192,14 @@
    "reported": "2026-10-27",
    "store": "Combat Company",
    "title": "Magic: The Gathering:  Avatar: The Last Airbender Play Booster"
+  },
+  "outlier|Combat Company|thecombatcompany.com/products/mtg-the-hobbit-bundle-pre-order-aug": {
+   "first_seen": "2026-11-19",
+   "last_seen": "2026-11-19",
+   "price": 64.95,
+   "reported": "2026-11-19",
+   "store": "Combat Company",
+   "title": "MTG The Hobbit - Bundle"
   },
   "outlier|Elementalarcade|elementalarcade.com.au/products/avatar-the-last-airbender-beginner-box": {
    "first_seen": "2026-10-29",
