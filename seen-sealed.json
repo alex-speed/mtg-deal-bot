@@ -273,6 +273,30 @@
    "store": "Games Empire",
    "title": "Magic the Gathering Murders at Karlov Manor Prerelease Pack"
   },
+  "outlier|Games Empire|gamesempire.com.au/products/magic-the-gathering-star-trek-commander-deck-klingon-fury": {
+   "first_seen": "2026-11-20",
+   "last_seen": "2026-11-20",
+   "price": 69.99,
+   "reported": "2026-11-20",
+   "store": "Games Empire",
+   "title": "Magic The Gathering Star Trek Commander Deck Klingon Fury"
+  },
+  "outlier|Gamesportal|gamesportal.com.au/products/magic-fallout-mutant-menace-commander-deck": {
+   "first_seen": "2026-11-20",
+   "last_seen": "2026-11-20",
+   "price": 140.0,
+   "reported": "2026-11-20",
+   "store": "Gamesportal",
+   "title": "Magic Fallout - Mutant Menace Commander Deck"
+  },
+  "outlier|Gamesportal|gamesportal.com.au/products/magic-fallout-scrappy-survivors-commander-deck": {
+   "first_seen": "2026-11-20",
+   "last_seen": "2026-11-20",
+   "price": 80.0,
+   "reported": "2026-11-20",
+   "store": "Gamesportal",
+   "title": "Magic Fallout - Scrappy Survivors Commander Deck"
+  },
   "outlier|Gamesportal|gamesportal.com.au/products/nauctis-the-sunken-realm-booster": {
    "first_seen": "2026-11-18",
    "last_seen": "2026-11-20",
@@ -429,7 +453,7 @@
   },
   "outlier|JToys|www.jtoys.com.au/product/magic-the-gathering-march-of-the-machine-set-booster-box": {
    "first_seen": "2026-11-16",
-   "last_seen": "2026-11-19",
+   "last_seen": "2026-11-20",
    "price": 349.99,
    "reported": "2026-11-16",
    "store": "JToys",
@@ -470,6 +494,14 @@
    "reported": "2026-10-29",
    "store": "Manamarket",
    "title": "Edge of Eternities Commander Deck World Shaper"
+  },
+  "outlier|Manamarket|manamarket.com.au/products/magic-the-gathering-edge-of-eternities-collector-booster-boxpreorder": {
+   "first_seen": "2026-11-20",
+   "last_seen": "2026-11-20",
+   "price": 1300.0,
+   "reported": "2026-11-20",
+   "store": "Manamarket",
+   "title": "Magic: The Gathering: Edge of Eternities Collector Booster Box"
   },
   "outlier|Manamarket|manamarket.com.au/products/magic-the-gathering-spiderman-bundle-preorder": {
    "first_seen": "2026-11-19",
@@ -745,7 +777,7 @@
   },
   "outlier|Warhaus|warhaus.com.au/products/magic-the-gathering-secrets-of-strixhaven-commander-decks-5-decks-per-display": {
    "first_seen": "2026-11-07",
-   "last_seen": "2026-11-19",
+   "last_seen": "2026-11-20",
    "price": 299.97,
    "reported": "2026-11-07",
    "store": "Warhaus",
