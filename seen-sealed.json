@@ -169,6 +169,14 @@
    "store": "Combat Company",
    "title": "Magic - Final Fantasy Commander Deck - Limit Break"
   },
+  "outlier|Combat Company|thecombatcompany.com/products/magic-final-fantasy-commander-deck-scions-spellcraft": {
+   "first_seen": "2026-11-21",
+   "last_seen": "2026-11-21",
+   "price": 95.0,
+   "reported": "2026-11-21",
+   "store": "Combat Company",
+   "title": "Magic - Final Fantasy Commander Deck - Scions & Spellcraft"
+  },
   "outlier|Combat Company|thecombatcompany.com/products/magic-final-fantasy-starter-kit-display-pre-order-13-jun": {
    "first_seen": "2026-11-19",
    "last_seen": "2026-11-20",
@@ -550,6 +558,14 @@
    "reported": "2026-11-17",
    "store": "Manamarket",
    "title": "Star Trek Commander Deck - We Are the Borg"
+  },
+  "outlier|Manamarket|manamarket.com.au/products/star-trek-prerelease-pack": {
+   "first_seen": "2026-11-21",
+   "last_seen": "2026-11-21",
+   "price": 40.0,
+   "reported": "2026-11-21",
+   "store": "Manamarket",
+   "title": "Star Trek - Prerelease pack"
   },
   "outlier|Manamarket|manamarket.com.au/products/star-trek-scene-box-divergent-timelines": {
    "first_seen": "2026-11-06",
