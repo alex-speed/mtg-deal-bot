@@ -91,7 +91,7 @@
   },
   "outlier|AWNO Games|www.awnogames.com.au/products/magic-the-gathering-reality-fracture-prerelease-pack": {
    "first_seen": "2026-11-16",
-   "last_seen": "2026-11-20",
+   "last_seen": "2026-11-21",
    "price": 48.0,
    "reported": "2026-11-16",
    "store": "AWNO Games",
@@ -511,13 +511,29 @@
    "store": "Manamarket",
    "title": "Magic: The Gathering: Spiderman Bundle"
   },
+  "outlier|Manamarket|manamarket.com.au/products/magic-the-gathering-spiderman-commander-deck-preorder": {
+   "first_seen": "2026-11-21",
+   "last_seen": "2026-11-21",
+   "price": 35.0,
+   "reported": "2026-11-21",
+   "store": "Manamarket",
+   "title": "Magic: The Gathering: Spiderman Scene Box"
+  },
   "outlier|Manamarket|manamarket.com.au/products/magic-the-gathering-spiderman-play-booster-box-preorder": {
    "first_seen": "2026-11-19",
-   "last_seen": "2026-11-20",
+   "last_seen": "2026-11-21",
    "price": 175.0,
    "reported": "2026-11-19",
    "store": "Manamarket",
    "title": "Magic: The Gathering: Spiderman Play Booster Box"
+  },
+  "outlier|Manamarket|manamarket.com.au/products/magic-the-gathering-tarkir-dragonstorm-commander-deck-sultai-arisen": {
+   "first_seen": "2026-11-21",
+   "last_seen": "2026-11-21",
+   "price": 90.0,
+   "reported": "2026-11-21",
+   "store": "Manamarket",
+   "title": "Sultai Arisen - Magic: The Gathering Tarkir: Dragonstorm Commander Deck"
   },
   "outlier|Manamarket|manamarket.com.au/products/marvel-super-heroes-commander-deck-case": {
    "first_seen": "2026-10-29",
@@ -590,6 +606,22 @@
    "reported": "2026-11-19",
    "store": "Manamarket",
    "title": "The Hobbit - Play Booster Box"
+  },
+  "outlier|Manamarket|manamarket.com.au/products/the-hobbit-scene-box-crack-the-plates": {
+   "first_seen": "2026-11-21",
+   "last_seen": "2026-11-21",
+   "price": 50.0,
+   "reported": "2026-11-21",
+   "store": "Manamarket",
+   "title": "The Hobbit Scene Box - Crack the Plates"
+  },
+  "outlier|Manamarket|manamarket.com.au/products/the-hobbit-scene-box-treasures-of-smaug": {
+   "first_seen": "2026-11-21",
+   "last_seen": "2026-11-21",
+   "price": 50.0,
+   "reported": "2026-11-21",
+   "store": "Manamarket",
+   "title": "The Hobbit Scene Box - Treasures of Smaug"
   },
   "outlier|Mint Collectables|mintcollectables.com.au/products/magic-the-gathering-aetherdrift-commander-deck": {
    "first_seen": "2026-10-27",
@@ -678,6 +710,14 @@
    "reported": "2026-10-29",
    "store": "Ronin Games",
    "title": "Foundations - Starter Collection"
+  },
+  "outlier|Ronin Games|roningames.com.au/products/modern-horizons-3-play-booster-display": {
+   "first_seen": "2026-11-21",
+   "last_seen": "2026-11-21",
+   "price": 490.0,
+   "reported": "2026-11-21",
+   "store": "Ronin Games",
+   "title": "Modern Horizons 3 - Play Booster Display"
   },
   "outlier|Shuffled|shuffled.com.au/products/mtg-x-the-hobbit-scene-box-pair": {
    "first_seen": "2026-10-27",
