@@ -193,6 +193,14 @@
    "store": "Combat Company",
    "title": "Magic - Secrets of Strixhaven Commander Deck - Silverquill Influence"
   },
+  "outlier|Combat Company|thecombatcompany.com/products/magic-the-gathering-bundle-nauctis-the-sunken-realm": {
+   "first_seen": "2026-11-26",
+   "last_seen": "2026-11-26",
+   "price": 65.0,
+   "reported": "2026-11-26",
+   "store": "Combat Company",
+   "title": "Magic: the Gathering – Bundle – Nauctis: The Sunken Realm (Pre-Order 29/01/2027)"
+  },
   "outlier|Combat Company|thecombatcompany.com/products/mtg-the-hobbit-bundle-pre-order-aug": {
    "first_seen": "2026-11-19",
    "last_seen": "2026-11-26",
@@ -420,6 +428,14 @@
    "reported": "2026-11-11",
    "store": "Good Games",
    "title": "Magic: The Gathering Edge of Eternities Commander Deck"
+  },
+  "outlier|Guf|guf.com.au/products/march-of-the-machine-the-aftermath-bundle-epilogue-edition": {
+   "first_seen": "2026-11-26",
+   "last_seen": "2026-11-26",
+   "price": 64.95,
+   "reported": "2026-11-26",
+   "store": "Guf",
+   "title": "March of the Machine the Aftermath Bundle Epilogue Edition"
   },
   "outlier|Guf|guf.com.au/products/march-of-the-machine-the-aftermath-collector-booster-box": {
    "first_seen": "2026-10-29",
